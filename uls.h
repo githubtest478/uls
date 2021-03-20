@@ -8,9 +8,12 @@
 // структура для флагов
 typedef struct s_flags {
     bool l;
-
 }              t_flags;
-
+// структура для файлов и директорий
+typedef struct s_names {
+    char **names;
+    int count;
+}              t_names;
 
 
 /*
@@ -32,7 +35,8 @@ t_flags *mx_process_flags(int flags_count, char **argv);
 void mx_check_flags_in_str(char *str, t_flags *flags);
 void mx_check_flag(char flag, t_flags *flags);
 
-
+// ARGV HANDLE
+t_names *mx_process_names(int flags_count, int argc, char **argv);
 
 
 
@@ -41,7 +45,7 @@ void mx_check_flag(char flag, t_flags *flags);
 
 // LIBMX function
 int mx_strlen(const char *s);
-
+char *mx_strcpy(char *dst, const char *src);
 
 
 
