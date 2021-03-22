@@ -1,16 +1,11 @@
 #include "uls.h"
 
-
-
-
-
-
-
 //обработка и добавление флагов
 t_flags *mx_process_flags(int flags_count, char **argv) {
     if(flags_count == 0) {  /* Если флагов 0 то возвращаем NULL */
         return NULL;
     }
+    
     t_flags *flags = (t_flags*)malloc(sizeof(t_flags)); // создание струкруты ФЛАГОВ
     
     for(int i = 1; i <= flags_count; ++i) {     //начиная с первого и до (flags_count) проверка и добовление флагов

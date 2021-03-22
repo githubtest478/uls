@@ -1,8 +1,5 @@
 #include "uls.h"
 
-
-
-
 // обработка входящих аргументов и проверка их на валидность
 void mx_process_argc_argv(int argc, char **argv) { 
     int flags_count = mx_count_flags(argc, argv);
@@ -14,17 +11,7 @@ void mx_process_argc_argv(int argc, char **argv) {
     if(flags == NULL) {
         printf("no flags");
     }
-
-
-
-
 }
-
-
-
-
-
-
 
 // подсчет количества всех аргументов корорые начинаются с ('-')
 int mx_count_flags(int argc, char **argv) {

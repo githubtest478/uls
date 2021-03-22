@@ -12,9 +12,6 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
-// #include <sys/uio.h>
-// #include <string.h>
-// #include <stddef.h>
 
 //structures
 typedef struct s_list {
@@ -28,8 +25,8 @@ void mx_printchar(char c); //done (100/100)
 void mx_printstr(const char *s); //done (100/100)
 void mx_print_strarr(char **arr, const char *delim); //done (100/100)
 char *mx_nbr_to_hex(unsigned long nbr); //done (100/100)
-int mx_bubble_sort(int *arr, int size); //(0/100) MODIFIED
-int mx_quicksort(int *arr, int left, int right); //(80/100) Task was remaneged 
+int mx_bubble_sort(int *arr, int size); //done (100/100)
+int mx_quicksort(int *arr, int left, int right); //done (100/100)
 char *mx_itoa(int number); //done (100/100)
 
 //Advanced. Utils pack //DONE
@@ -43,28 +40,28 @@ int mx_binary_search(char **arr, int size, const char *s, int *count); //done (1
 //Basic. Strings pack
 int mx_strlen(const char *s); //done (100/100)
 void mx_swap_char(char *s1, char *s2); //done (100/100)
-char *mx_strcpy(char *dst, const char *src); //was (100/100) become (70/100)
+char *mx_strcpy(char *dst, const char *src); //done (100/100)
 int mx_strcmp(const char *s1, const char *s2); //done (100/100)
 char *mx_strcat(char *restrict s1, const char *restrict s2); //done (100/100)
 char *mx_strnew(const int size); //done (100/100)
 char *mx_strdup(const char *s1); //done (100/100)
-char *mx_strjoin(const char *s1, const char *s2); //done (100/100)
+char *mx_strjoin(const char *s1, const char *s2); //(75/100) need to be modyfied
 void mx_strdel(char **str); //done (100/100)
 void mx_del_strarr(char ***arr); //done (100/100)
 char *mx_file_to_str(const char *file); //done (100/100)
-int mx_read_line(char **lineptr, size_t buf_size, char delim, const int fd); //(90/100) need to be modify
+int mx_read_line(char **lineptr, size_t buf_size, char delim, const int fd); //(90/100) it's Ok(Timeout problem)
 
-//Advanced. Strings pack
+//Advanced. Strings pack //DONE
 char *mx_strncpy(char *dst, const char *src, int len); //done (100/100)
 void mx_str_reverse(char *s); //done (100/100)
 char *mx_strndup(const char *s1, size_t n); //done (100/100)
-char *mx_strstr(const char *haystack, const char *needle); //(80/100) MODIFIED
+char *mx_strstr(const char *haystack, const char *needle); //done (100/100)
 int mx_count_words(const char *str, char c); //done (100/100)
 int mx_count_substr(const char *str, const char *sub); //done (100/100)
 int mx_get_char_index(const char *str, char c); //done (100/100)
 int mx_get_substr_index(const char *str, const char *sub); //done (100/100)
-char *mx_strtrim(const char *str); //(70/100) MODIFIED
-char *mx_del_extra_spaces(const char *str); //(74/100) depend from mx_stryrim
+char *mx_strtrim(const char *str); //done (100/100)
+char *mx_del_extra_spaces(const char *str); //done (100/100)
 char **mx_strsplit(const char *s, char c); //done (100/100)
 char *mx_replace_substr(const char *str, const char* sub, const char *replace); //done (100/100)
 
@@ -79,7 +76,7 @@ void *mx_memmove(void *dst, const void *src, size_t len); //done (100/100)
 void *mx_memrchr(const void *s, int c, size_t n); //done (100/100)
 void *mx_memccpy(void *restrict dst, const void *restrict src,int c, size_t n); //done (100/100)
 void *mx_memchr(const void *s, int c, size_t n); //done (100/100)
-void *mx_memmem(const void *big, size_t big_len, const void *little, size_t little_len); //(80/100) need to be modify
+void *mx_memmem(const void *big, size_t big_len, const void *little, size_t little_len); //(100/100)
 
 //Basic. List pack //DONE
 t_list *mx_create_node(void *data); //done (100/100)
