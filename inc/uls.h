@@ -1,8 +1,11 @@
+#ifndef ULS_H
+#define ULS_H
+
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include "libmx.h"
 
 
 // структура для флагов
@@ -47,9 +50,4 @@ t_names *mx_process_names(int flags_count, int argc, char **argv);
 int mx_strlen(const char *s);
 char *mx_strcpy(char *dst, const char *src);
 
-
-
-
-
-
-
+#endif /* ULS_H */
