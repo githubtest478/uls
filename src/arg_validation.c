@@ -5,14 +5,15 @@ void arg_validation(int argn, char **argv, t_names *names)
     names->flags = clear_flags;
 
     if(argn == 1) {
-        names->dirs[0] = readdir(opendir("/"));
+        names->dirs[0] = ".";
+        names->dirs_content[0] = readdir(opendir("."));
         names->dirs_count = 1;
         return;
     }
 
     names->dirs_count = 0;
     char macOS_options[] = "@1AaCceGhlRrSTtu";
-    
+
     // char *linux_options[] = {
     //     "almost-all",       //-A
     //     "all",              //-a
@@ -30,13 +31,15 @@ void arg_validation(int argn, char **argv, t_names *names)
                 
                 if(pos != -1)
                     names->flags |= 1 << pos;
+                else
+                //error
             }   //set flags with "-" prefix
         }
         else {
             mx_realloc(names->dirs, names->dirs_count + 1);
             
             if(names->dirs)
-                names->dirs[names->dirs_count] = argv[i];   //read dirs to structure
+                names->dirs[names->dirs_count++] = argv[i];   //read dirs to structure
         }
         //place for ERROR hendeling
     }
