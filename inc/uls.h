@@ -12,6 +12,14 @@
 #include <sys/stat.h>
 #include "libmx.h"
 
+//test.c
+#include <stdio.h>
+#include <unistd.h>
+#include <time.h>
+#include <pwd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
 //flag macrosses
 #define SET_FLAG(reg, flag) (reg |= flag) //use to set flag
 #define RESET_FLAG(reg, flag) (reg &= ~flag) //use to clear the flag
