@@ -1,7 +1,7 @@
+#include "uls.h"
 
-/*
-если не приходят флаги и аргументы вывод всего содеджимого в текущей директории а также проветка на |cat -e
-*/
+void uls_algorithm(t_names *entry)
+{
     DIR *dir;
     struct dirent *entry;
 
@@ -27,3 +27,4 @@
         }
     }
     closedir(dir);
+}
