@@ -1,6 +1,6 @@
 #include "uls.h"
 
-void uls_algorithm(t_names *entry)
+void uls_algorithm(t_names *s_names)
 {
     DIR *dir;
     struct dirent *entry;
@@ -29,59 +29,63 @@ void uls_algorithm(t_names *entry)
     closedir(dir);
 }
 
-//
-#include <stdio.h>
-#include <unistd.h>
-#include <time.h>
-#include <pwd.h>
-#include <sys/stat.h>
-#include <dirent.h>
-
 /* 
 считает количество выделеной памяти для дирекрории 
 */
-char *mx_count_total(char *dir_name) {
-    DIR *folder;
-    int total = 0;
-    struct dirent *entry;
-    struct stat filestat;
 
-    folder = opendir(dir_name);
-    if(folder == NULL) // ERROR
-    {   
+char *total_count(char *dir_name) {
+    DIR *folder = NULL;
+    uint32_t sum = 0;
+    struct dirent *entry = NULL;
+    struct stat filestat;
+    char *total;
+
+    folder = opendir(dir_name);  
+    
+    if(folder == NULL) {   
         perror("Unable to read directory");
     }
-    while((entry=readdir(folder)) ) {
+
+    entry = readdir(folder);
+
+    while(entry) {
         stat(entry->d_name, &filestat);
-        total += filestat.st_blocks;
+        sum += filestat.st_blocks;
+        entry = readdir(folder);
     }
-    return mx_itoa(total);
+    closedir(folder);
+    char *temp = mx_strjoin("total ", mx_itoa(sum));
+    total = mx_strjoin(temp, "\n");
+    mx_strdel(&temp);
+
+    return total;
 }
 
-/*
-    вывод аналогочный ls -l нужно модифицировать под разные флаги и дирекрории, выводит содержимое !!!ТЕКУЩЕЙ дирекрории но можно передавать просто имя. 
- */
-void mx_test_open_curent_dir() {
-    DIR *folder;
-    struct dirent *entry;
+/*вывод аналогочный ls -l нужно модифицировать под разные флаги и дирекрории, выводит содержимое !!!ТЕКУЩЕЙ дирекрории но можно передавать просто имя.*/
+void mx_test_open_curent_dir(t_names *names) 
+{
+    DIR *folder = NULL;
+    struct dirent *entry = NULL;
     struct stat filestat;
-    char *temporary;
-
-
+    char *temporary = NULL;
 
     mx_printstr("total ");
-    temporary = mx_count_total(".");    // must free
+    temporary = total(".");    // must free
     mx_printstr(temporary);   
     free(temporary);           // free
+
     mx_printstr("\n");
 
     folder = opendir(".");
+
     if(folder == NULL) // ERROR
     {
         perror("Unable to read directory");
     }
     /* Read directory entries */
-    while( (entry=readdir(folder)) )
+    entry = readdir(folder);
+
+    while(entry)
     {
         if(entry->d_name[0] != '.') {
             stat(entry->d_name, &filestat);
@@ -97,7 +101,6 @@ void mx_test_open_curent_dir() {
             mx_printstr( (filestat.st_mode & S_IWOTH) ? "w" : "-");
             mx_printstr( (filestat.st_mode & S_IXOTH) ? "x" : "-");
             mx_printstr(" ");
-
           
             temporary = mx_itoa(filestat.st_nlink); // must free mx_itoa
             mx_printstr(temporary);       
@@ -125,6 +128,7 @@ void mx_test_open_curent_dir() {
             mx_printstr(entry->d_name);
             mx_printstr("\n");
         }
+        entry = readdir(folder);
     }
     closedir(folder);
 }

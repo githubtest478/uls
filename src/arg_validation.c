@@ -2,7 +2,7 @@
 
 void init_dir_structure(t_names *names)
 {
-    names->flags = clear_flags;
+    names->flags |= flag_C;
     names->dirs = (char **) malloc(sizeof(char *));
     names->dirs_count = 0;
 }
@@ -11,11 +11,11 @@ void arg_validation(int argn, char **argv, t_names *names)
 {
     init_dir_structure(names);
     
-    if(argn == 1) {
-        names->dirs[0] = ".";
-        names->dirs_count++;
-        return;
-    }
+    // if(argn == 1) {
+    //     names->dirs[0] = ".";
+    //     names->dirs_count++;
+    //     return;
+    // }
 
     // char *linux_options[] = {
     //     "almost-all",       //-A
@@ -45,5 +45,10 @@ void arg_validation(int argn, char **argv, t_names *names)
         if(errno) {
             strerror(errno);
         }
+    }
+
+    if(names->dirs_count == 0) {
+        names->dirs[0] = ".";
+        names->dirs_count++;
     }
 }

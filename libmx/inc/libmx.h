@@ -96,5 +96,6 @@ bool mx_isspace(char c);
 int mx_atoi(const char *str);
 void mx_print_error(char *error);
 int mx_strncmp(const char *src, const char *str, size_t n);
+void mx_print_list(char ***list, char *dilim1, char *dilim2);
 
 #endif /* LIBMX_H */
