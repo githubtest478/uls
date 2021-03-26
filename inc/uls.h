@@ -92,7 +92,7 @@ void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
 void mx_test_open_curent_dir(t_names *names);
 void print_dirs(t_names * names);
-char *total(char *dir_name);
+char *total(t_names * names);
 
 void sort_by_alpgaber(t_names *names);
 

@@ -20,7 +20,7 @@ void print_dirs(t_names * names)
         names->dirs_content = readdir(names->folder);
 
         if(READ_FLAG(names->flags, flag_l)) {
-            mx_printstr(total(names->dirs[i]));
+            mx_printstr(total(names));
         }
 
         while(names->dirs_content) {
@@ -60,27 +60,43 @@ void print_dirs(t_names * names)
     }
 }
 
-char *total(char *dir_name) {
-    DIR *folder = NULL;
+// char *total(char *dir_name) {
+//     DIR *folder = NULL;
+//     uint32_t sum = 0;
+//     struct dirent *entry = NULL;
+//     struct stat filestat;
+//     char *total;
+
+//     folder = opendir(dir_name);  
+    
+//     if(folder == NULL) {   
+//         perror("Unable to read directory");
+//     }
+
+//     entry = readdir(folder);
+
+//     while(entry) {
+//         stat(entry->d_name, &filestat);
+//         sum += filestat.st_blocks;
+//         entry = readdir(folder);
+//     }
+//     closedir(folder);
+//     char *temp = mx_strjoin("total ", mx_itoa(sum));
+//     total = mx_strjoin(temp, "\n");
+//     mx_strdel(&temp);
+
+//     return total;
+// }
+
+char *total(t_names * names) {
     uint32_t sum = 0;
-    struct dirent *entry = NULL;
-    struct stat filestat;
     char *total;
 
-    folder = opendir(dir_name);  
-    
-    if(folder == NULL) {   
-        perror("Unable to read directory");
+    int i = 0, count = READ_FLAG(names->flags, flag_i) ? 5 : 4;
+    while(names->list[i] != NULL) {
+        sum += mx_atoi(names->list[i][count]);
+        ++i;
     }
-
-    entry = readdir(folder);
-
-    while(entry) {
-        stat(entry->d_name, &filestat);
-        sum += filestat.st_blocks;
-        entry = readdir(folder);
-    }
-    closedir(folder);
     char *temp = mx_strjoin("total ", mx_itoa(sum));
     total = mx_strjoin(temp, "\n");
     mx_strdel(&temp);
