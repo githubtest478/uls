@@ -35,18 +35,14 @@ char *mx_itoa(long long number) {
     return str;
 }
 
-int count_files_in_current_dir(void) {
-    int file_count = 0;
-    DIR * dirp;
-    struct dirent * entry;
-
-    dirp = opendir(".");
-    while((entry = readdir(dirp)) != NULL) {
+void count_files_in_current_dir(t_names *names) {
+    names->file_count = 0;
+ 
+   while(readdir(names->folder)) {
         // if (entry->d_type == DT_REG) { /* If the entry is a regular file */
         //     ++file_count;
         // }
-        ++file_count;
+       names->file_count++;
     }
-    return file_count;
 }
 

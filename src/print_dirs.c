@@ -10,9 +10,11 @@ void print_dirs(t_names * names)
 
     for(uint8_t i = 0; i < names->dirs_count;) {
         
-        names->list = malloc(sizeof(char ***) * 6);
         names->folder = opendir(names->dirs[i]);
-
+        count_files_in_current_dir(names);
+        
+        names->list = malloc(sizeof(char ***) * (names->file_count));
+    
         if(names->folder == NULL) {
             perror("Unable to read directory");
         }
@@ -31,7 +33,7 @@ void print_dirs(t_names * names)
             list_size += READ_FLAG(names->flags, flag_i);
 
             names->list[i] = (char **) malloc(sizeof(char *) * list_size);
-            names->file_count++;
+            //names->file_count++;
 
             // if(names->file_count > malloc_size(names->list) / sizeof(char***)) {
             //     names->list = realloc(names->list, names->file_count * sizeof(char***));
