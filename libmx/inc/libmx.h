@@ -27,7 +27,7 @@ void mx_print_strarr(char **arr, const char *delim); //done (100/100)
 char *mx_nbr_to_hex(unsigned long nbr); //done (100/100)
 int mx_bubble_sort(int *arr, int size); //done (100/100)
 int mx_quicksort(int *arr, int left, int right); //done (100/100)
-char *mx_itoa(int number); //done (100/100)
+//char *mx_itoa(int number); //done (100/100)
 
 //Advanced. Utils pack //DONE
 void mx_print_unicode(wchar_t c); //done (100/100)
@@ -97,5 +97,6 @@ int mx_atoi(const char *str);
 void mx_print_error(char *error);
 int mx_strncmp(const char *src, const char *str, size_t n);
 void mx_print_list(char ***list, char *dilim1, char *dilim2);
+char *mx_itoa(long long number);
 
 #endif /* LIBMX_H */

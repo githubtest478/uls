@@ -82,6 +82,7 @@ typedef struct s_names {
     struct dirent *dirs_content;    //ino_t  d_ino       File serial number.
                                     //char   d_name[]    Filename string of entry.
     uint8_t dirs_count;
+    uint32_t file_count;
     uint32_t flags;
     DIR *folder;
 }              t_names;
@@ -93,6 +94,9 @@ void mx_test_open_curent_dir(t_names *names);
 void print_dirs(t_names * names);
 char *total(char *dir_name);
 
+void sort_by_alpgaber(t_names *names);
+
+char *serial_number(struct stat filestat);
 char *permision(struct stat filestat);
 char *link_param(struct stat filestat);
 char *owner(struct stat filestat);

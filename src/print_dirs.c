@@ -3,14 +3,14 @@
 void print_dirs(t_names * names)
 {
 
-    char *dilim1 =  READ_FLAG(names->flags, flag_l)     ? " "   : "";
+    char *dilim1 =  READ_FLAG(names->flags, flag_l | flag_i)     ? " "   : "";
     char *dilim2 =  READ_FLAG(names->flags, flag_m)     ? ", "  :
                     READ_FLAG(names->flags, flag_one)   ? "\n"  :
                     READ_FLAG(names->flags, flag_C)     ? " "   : "";
 
     for(uint8_t i = 0; i < names->dirs_count;) {
         
-        names->list = malloc(sizeof(char ***) * names->dirs_count + 1);
+        names->list = malloc(sizeof(char ***) * 6);
         names->folder = opendir(names->dirs[i]);
 
         if(names->folder == NULL) {
@@ -25,30 +25,39 @@ void print_dirs(t_names * names)
 
         while(names->dirs_content) {
             stat(names->dirs_content->d_name, &names->filestat);
-            
+            uint8_t count = 0;
+            uint8_t list_size = 2;
+            list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
+            list_size += READ_FLAG(names->flags, flag_i);
+
+            names->list[i] = (char **) malloc(sizeof(char *) * list_size);
+            names->file_count++;
+
+            // if(names->file_count > malloc_size(names->list) / sizeof(char***)) {
+            //     names->list = realloc(names->list, names->file_count * sizeof(char***));
+            // }
+
+            if(READ_FLAG(names->flags, flag_i)) {
+                names->list[i][count++] = serial_number(names->filestat);
+            }
+
             if(READ_FLAG(names->flags, flag_l)) {
-                names->list[i] = (char **) malloc(sizeof(char *) * 8);
-                names->list[i][0] = permision(names->filestat);
-                names->list[i][1] = link_param(names->filestat);
-                names->list[i][2] = owner(names->filestat);
-                names->list[i][3] = group(names->filestat);
-                names->list[i][4] = size(names->filestat);
-                names->list[i][5] = last_modify(names->filestat);
-                names->list[i][6] = name(names->dirs_content);
-                names->list[i][7] = NULL;            
+                names->list[i][count++] = permision(names->filestat);   //0
+                names->list[i][count++] = link_param(names->filestat);  //1
+                names->list[i][count++] = owner(names->filestat);       //2
+                names->list[i][count++] = group(names->filestat);       //3
+                names->list[i][count++] = size(names->filestat);        //4
+                names->list[i][count++] = last_modify(names->filestat); //5
             }
-            else if(READ_FLAG(names->flags, flag_C)) {
-                names->list[i] = (char **) malloc(sizeof(char *) * 2);
-                names->list[i][0] = name(names->dirs_content);
-                names->list[i][1] = NULL;
-            }
+            names->list[i][count++] = name(names->dirs_content);        //6
+            names->list[i][count++] = NULL;                             //7
 
             names->list[++i] = NULL;
             names->dirs_content = readdir(names->folder);
         }
+        sort_by_alpgaber(names);
+        mx_print_list(names->list, dilim1, dilim2);
     }
-    
-    mx_print_list(names->list, dilim1, dilim2);
 }
 
 char *total(char *dir_name) {

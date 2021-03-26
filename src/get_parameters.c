@@ -1,5 +1,10 @@
 #include "uls.h"
 
+char *serial_number(struct stat filestat) 
+{
+    return mx_itoa(filestat.st_ino);
+}
+
 char *permision(struct stat filestat)
 {   
     char *permision = mx_strnew(10);
