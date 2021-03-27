@@ -12,13 +12,14 @@ void print_dirs(t_names * names)
         
         names->folder = opendir(names->dirs[i]);
         count_files_in_current_dir(names);
-        
-        names->list = malloc(sizeof(char ***) * (names->file_count));
+
+        names->list = malloc(sizeof(char ***) * names->file_count);
     
         if(names->folder == NULL) {
             perror("Unable to read directory");
         }
 
+        names->folder = opendir(names->dirs[i]);
         names->dirs_content = readdir(names->folder);
 
         if(READ_FLAG(names->flags, flag_l)) {
@@ -57,7 +58,7 @@ void print_dirs(t_names * names)
             names->list[++i] = NULL;
             names->dirs_content = readdir(names->folder);
         }
-        sort_by_alpgaber(names);
+        //sort_by_alpgaber(names);
         mx_print_list(names->list, dilim1, dilim2);
     }
 }
