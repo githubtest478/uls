@@ -45,3 +45,41 @@ void count_files_in_current_dir(t_names *names) {
     closedir(names->folder);
 }
 
+void recursion_R_flag_test(char *str) {     //будет приходить t_names *names и char *str-имя директории для открытия  (!!! приходят только директории не файлы!!!)
+    DIR * dirp;
+    struct dirent * entry;
+
+    /* имя директори */
+    if(str[1] == '/') {
+        mx_printstr(str);
+        mx_printstr(":\n");
+    }
+
+    int i = 0;
+    /* сначала считываем первый раз и выводим содержимое */
+    dirp = opendir(str);
+    while((entry = readdir(dirp)) != NULL) { 
+        i++;
+        if(entry->d_name[0] != '.') {
+            mx_printstr(entry->d_name);
+            mx_printstr(" ");
+        }
+    }
+        /*  тут нужно смотреть есть ли файлы в директории !ЕСЛИ НЕТ то не нужно это печатать  */
+        if(i != 2) {
+            mx_printstr("\n\n");
+        }
+
+    
+
+    closedir(dirp);
+
+    /* второй раз открываем и смотрим на наличие директорий */
+    dirp = opendir(str);
+    while((entry = readdir(dirp)) != NULL) {
+        if(entry->d_type == DT_DIR && entry->d_name[0] != '.') {   // если приходит директория то РИКУРСИЯ ДЛЯ НЕЕ (надо  str_join (str + '/' + entry->d_name))
+            recursion_R_flag_test(mx_strjoin(str, mx_strjoin("/", entry->d_name)));
+        }
+    }
+    closedir(dirp);
+}
