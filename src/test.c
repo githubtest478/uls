@@ -36,8 +36,6 @@ char *mx_itoa(long long number) {
 }
 
 void count_files_in_current_dir(t_names *names) {
-   
-    
     while(readdir(names->folder)) {
         // if (entry->d_type == DT_REG) { /* If the entry is a regular file */
         //     ++file_count;
