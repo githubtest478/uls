@@ -41,7 +41,8 @@ char *group(struct stat filestat)
 
 char *size(struct stat filestat)
 {
-    return mx_itoa(filestat.st_size); 
+    //return mx_itoa(filestat.st_size); 
+    return mx_itoa(filestat.st_blksize);
 }
 
 char *last_modify(struct stat filestat)

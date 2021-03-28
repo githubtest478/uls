@@ -22,12 +22,7 @@ void arg_validation(int argn, char **argv, t_names *names)
             }   //set flags with "-" prefix
         }
         else {
-            if(names->dirs) {
-                if(malloc_size(names->dirs) <= names->dirs_count + 1)
-                    mx_realloc(names->dirs, names->dirs_count + 1);
-
-                names->dirs[names->dirs_count++] = argv[i];   //read dirs to structure
-            }
+            names->dirs[names->dirs_count++] = argv[i];   //read dirs to structure
         }
         
         if(errno) {

@@ -1,6 +1,6 @@
 #include "uls.h"
 
-void sort_by_alpgaber(t_names *names)
+static void sort_by_alphabet(t_names *names)
 {
     uint8_t index = 0;
     index += READ_FLAG(names->flags, flag_l) ? 6 : 0;
@@ -19,12 +19,20 @@ void sort_by_alpgaber(t_names *names)
     }
 }
 
-void sort_by_created_time(t_names *names)
+static void sort_by_time(t_names *names)
 {
 
 }
 
-void sort_by_changed_time(t_names *names)
+void sort(t_names *names)
 {
-
-}
+    if(READ_FLAG(names->flags, flag_f)) {
+        return;
+    }
+    else if(READ_FLAG(names->flags, flag_r | flag_C)) {
+        sort_by_alphabet(names); 
+    }
+    else if(READ_FLAG(names->flags, flag_t | flag_c)) {
+        sort_by_time(names);
+    }
+}   

@@ -36,6 +36,8 @@ char *mx_itoa(long long number) {
 }
 
 void count_files_in_current_dir(t_names *names) {
+    names->file_count = 0;
+    
     while(readdir(names->folder)) {
         // if (entry->d_type == DT_REG) { /* If the entry is a regular file */
         //     ++file_count;
@@ -74,12 +76,12 @@ void recursion_R_flag_test(char *str) {     //будет приходить t_na
 
     closedir(dirp);
 
-    /* второй раз открываем и смотрим на наличие директорий */
-    dirp = opendir(str);
-    while((entry = readdir(dirp)) != NULL) {
-        if(entry->d_type == DT_DIR && entry->d_name[0] != '.') {   // если приходит директория то РИКУРСИЯ ДЛЯ НЕЕ (надо  str_join (str + '/' + entry->d_name))
-            recursion_R_flag_test(mx_strjoin(str, mx_strjoin("/", entry->d_name)));
-        }
-    }
-    closedir(dirp);
+    /* второй раз открываем и смотрим на наличие директорий */ //Don't include lib for DT_DIR define 
+    // dirp = opendir(str);
+    // while((entry = readdir(dirp)) != NULL) {
+    //     if(entry->d_type == DT_DIR && entry->d_name[0] != '.') {   // если приходит директория то РИКУРСИЯ ДЛЯ НЕЕ (надо  str_join (str + '/' + entry->d_name))
+    //         recursion_R_flag_test(mx_strjoin(str, mx_strjoin("/", entry->d_name)));
+    //     }
+    // }
+    // closedir(dirp);
 }

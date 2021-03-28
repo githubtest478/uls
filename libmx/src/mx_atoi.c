@@ -3,7 +3,7 @@
 int mx_atoi(const char *str) {
     int count = 0;
     int sum = 0;
-    int flag = 0;
+    int flag = 1;
     
     while(mx_isspace(str[count++]));
     
