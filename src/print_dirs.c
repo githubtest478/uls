@@ -35,16 +35,16 @@ void print_dirs(t_names * names)
             names->list[count_line] = (char **) malloc(sizeof(char *) * list_size);
 
             if(READ_FLAG(names->flags, flag_i)) {
-                names->list[count_line][count_word++] = serial_number(names->filestat);     //0
+                names->list[count_line][count_word++] = serial_number(&names->filestat);    //0
             }
             
             if(READ_FLAG(names->flags, flag_l)) {
-                names->list[count_line][count_word++] = permision(names->filestat);         //1 
-                names->list[count_line][count_word++] = link_param(names->filestat);        //2 
-                names->list[count_line][count_word++] = owner(names->filestat);             //3 
-                names->list[count_line][count_word++] = group(names->filestat);             //4 
-                names->list[count_line][count_word++] = size(names->filestat);              //5 
-                names->list[count_line][count_word++] = last_modify(names->filestat);       //6 
+                names->list[count_line][count_word++] = permision(&names->filestat);        //1 
+                names->list[count_line][count_word++] = link_param(&names->filestat);       //2 
+                names->list[count_line][count_word++] = owner(&names->filestat);            //3 
+                names->list[count_line][count_word++] = group(&names->filestat);            //4 
+                names->list[count_line][count_word++] = size(&names->filestat);             //5 
+                names->list[count_line][count_word++] = last_modify(&names->filestat);      //6 
             }
             names->list[count_line][count_word++] = name(names->dirs_content);              //7
             names->list[count_line][count_word] = NULL;                                     //8
@@ -53,6 +53,7 @@ void print_dirs(t_names * names)
         }
 
         print_total(names);
+        form_colums(names);
         sort(names);
         mx_print_list(names->list, dilim1, dilim2);
 
@@ -64,6 +65,45 @@ void print_dirs(t_names * names)
         closedir(names->folder);
     }
 }
+
+// void print_int_arr(uint8_t *arr, uint8_t n) // debug func
+// {
+//     for(uint8_t i = 0; i < n; ++i) {
+//         mx_printint(arr[i]);
+//         mx_printchar(' ');
+//     }
+//     mx_printchar('\n');
+// }
+
+void form_colums(t_names *names)
+{
+    uint8_t max_size[9] = {0};
+    // printf("init value: ");
+    // print_int_arr((void *) max_size, 9);    
+
+    for(uint8_t i = 0; names->list[i]; ++i) {
+        for(uint8_t j = 1; names->list[i][j]; ++j) {
+            uint8_t size = mx_strlen(names->list[i][j]);
+            
+            if(size > max_size[j]) {
+                max_size[j] = size;
+            }
+        }
+    }
+    // printf("get size: ");
+    // print_int_arr((void *) max_size, 9);
+    for(uint8_t i = 0; names->list[i]; ++i) {
+        for(uint8_t j = 1; names->list[i][j]; ++j) {
+            for(uint8_t k = 0; max_size[j] >= mx_strlen(names->list[i][j]); ++k) {
+                char *temp = names->list[i][j];
+                names->list[i][j] = mx_strjoin(" ", temp);
+                free(temp);
+            }
+        }
+    }
+}
+
+
 
 void next_dir(t_names *names)
 {
@@ -109,6 +149,9 @@ void print_total(t_names * names) {
     while(names->list[i] != NULL) {
         sum += mx_atoi(names->list[i++][count]);
     }
+
+    while(sum > 102.4)
+        sum /= 102.4;
 
     char *temp = mx_strjoin("total ", mx_itoa(sum));
     total = mx_strjoin(temp, "\n");

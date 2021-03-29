@@ -98,15 +98,16 @@ void print_total(t_names * names);
 void sort(t_names *names);
 void next_dir(t_names *names);
 void init_list(t_names *names);
+void form_colums(t_names *names);
 
-char *serial_number(struct stat filestat);
-char *permision(struct stat filestat);
-char *link_param(struct stat filestat);
-char *owner(struct stat filestat);
-char *group(struct stat filestat);
-char *size(struct stat filestat);
-char *last_modify(struct stat filestat);
-char *last_created(struct stat filestat);
+char *serial_number(struct stat *filestat);
+char *permision(struct stat *filestat);
+char *link_param(struct stat *filestat);
+char *owner(struct stat *filestat);
+char *group(struct stat *filestat);
+char *size(struct stat *filestat);
+char *last_modify(struct stat *filestat);
+char *last_created(struct stat *filestat);
 char *name(struct dirent *entry);
 
 //debug function
