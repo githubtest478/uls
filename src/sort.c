@@ -32,9 +32,7 @@ static void sort_by_size(t_names *names)
 
     for(uint16_t i = 0; i < names->file_count - 1; ++i) {
         for(uint8_t j = 0; j < names->file_count; ++j) {
-            if(READ_FLAG(names->flags, flag_r) ? 
-                mx_strcmp(names->list[i][index], names->list[j][index]) > 0 : 
-                mx_strcmp(names->list[i][index], names->list[j][index]) < 0) {
+            if(mx_atoi(names->list[i][index]) < mx_atoi(names->list[j][index])) {
                 char** temp = names->list[i];
                 names->list[i] = names->list[j];
                 names->list[j] = temp;

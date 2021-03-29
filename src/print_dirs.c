@@ -82,7 +82,7 @@ void form_colums(t_names *names)
     // print_int_arr((void *) max_size, 9);    
 
     for(uint8_t i = 0; names->list[i]; ++i) {
-        for(uint8_t j = 1; names->list[i][j]; ++j) {
+        for(uint8_t j = 0; names->list[i][j + 1]; ++j) {
             uint8_t size = mx_strlen(names->list[i][j]);
             
             if(size > max_size[j]) {
@@ -93,8 +93,8 @@ void form_colums(t_names *names)
     // printf("get size: ");
     // print_int_arr((void *) max_size, 9);
     for(uint8_t i = 0; names->list[i]; ++i) {
-        for(uint8_t j = 1; names->list[i][j]; ++j) {
-            for(uint8_t k = 0; max_size[j] >= mx_strlen(names->list[i][j]); ++k) {
+        for(uint8_t j = 0; names->list[i][j + 1]; ++j) {
+            for(uint8_t k = 0; max_size[j] > mx_strlen(names->list[i][j]); ++k) {
                 char *temp = names->list[i][j];
                 names->list[i][j] = mx_strjoin(" ", temp);
                 free(temp);
@@ -102,8 +102,6 @@ void form_colums(t_names *names)
         }
     }
 }
-
-
 
 void next_dir(t_names *names)
 {
@@ -149,9 +147,6 @@ void print_total(t_names * names) {
     while(names->list[i] != NULL) {
         sum += mx_atoi(names->list[i++][count]);
     }
-
-    while(sum > 102.4)
-        sum /= 102.4;
 
     char *temp = mx_strjoin("total ", mx_itoa(sum));
     total = mx_strjoin(temp, "\n");
