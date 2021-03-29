@@ -28,8 +28,8 @@ RM			= /bin/rm -rf
 
 all: $(NAME)
 
-$(NAME): $(LIB_LIST) $(OBJ_DIR) $(OBJ)
-	@$(COMPILE) $(OBJ) -L./libmx -lmx -o $(NAME)
+$(NAME): $(LIB_LIST) $(OBJ_DIR) $(OBJ) 
+	@$(COMPILE) $(OBJ) -o $(NAME) -L./libmx -lmx
 	@printf "\r\33[2K$@ \033[35;1mcreated\033[0m\n"
 
 $(LIB_BIN): $(LIB_LIST)
@@ -41,7 +41,7 @@ $(OBJ_DIR):
 	@mkdir -p $@ $(foreach dir, $(DIRS), $@/$(dir))
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H) $(LIB_BIN)
-	@$(COMPILE) -o $@ -c $<
+	@$(COMPILE) -L./libmx -lmx -o $@ -c $<
 	@printf "\r\33[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
 
 clean:

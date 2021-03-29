@@ -18,7 +18,7 @@
 //flag macrosses
 #define SET_FLAG(reg, flag) (reg |= (flag)) //use to set flag
 #define RESET_FLAG(reg, flag) (reg &= ~(flag)) //use to clear the flag
-#define READ_FLAG(reg, flag) (reg & (flag)) //use to identify if flag(see e_flagset) is set
+#define READ_FLAG(reg, flag) !!(reg & (flag)) //use to identify if flag(see e_flagset) is set
 
 #define SORT_MASK (flag_r | flag_S | flag_t | flag_f | flag_c)
 
@@ -92,10 +92,12 @@ void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
 void mx_test_open_curent_dir(t_names *names);
 void print_dirs(t_names * names);
-void count_files_in_current_dir(t_names *names);
+void count_files(t_names *names);
 void delete_list(t_names *names);
 void print_total(t_names * names);
 void sort(t_names *names);
+void next_dir(t_names *names);
+void init_list(t_names *names);
 
 char *serial_number(struct stat filestat);
 char *permision(struct stat filestat);

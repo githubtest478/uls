@@ -6,38 +6,39 @@ void print_dirs(t_names * names)
     char *dilim2 =  READ_FLAG(names->flags, flag_m)     ? ", "  :
                     READ_FLAG(names->flags, flag_one)   ? "\n"  :
                     READ_FLAG(names->flags, flag_C)     ? " "   : "";
-    
-    for(uint8_t i = 0; i < names->dirs_count;) {
+    // printf("Dir count: %d\n", names->dirs_count); //debug
+    for(uint8_t index = 0; index < names->dirs_count;) {
         uint8_t count_line = 0;
-        names->folder = opendir(names->dirs[i]);
-        count_files_in_current_dir(names);
-        names->list = malloc(sizeof(char ***) * (names->file_count + 1));
+        uint8_t list_size = 2;
+        uint8_t test_point = 1; // debug
+        list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
+        list_size += READ_FLAG(names->flags, flag_i);
 
+        names->folder = opendir(names->dirs[index]);
+        count_files(names);
+        names->list = malloc(sizeof(char ***) * (names->file_count + 1));
+        
         if(names->folder == NULL) {
             perror("Unable to read directory");
         }
-
-        names->folder = opendir(names->dirs[i]);
-        names->dirs_content = readdir(names->folder);
+        
+        names->folder = opendir(names->dirs[index]);
+        next_dir(names);
         
         if(names->dirs_count != 1) {
-            mx_printstr(names->dirs[i]);
+            mx_printstr(names->dirs[index]);
             mx_printstr(":\n");
         }
-
+        
         while(names->dirs_content) {
-            stat(names->dirs_content->d_name, &names->filestat);
             uint8_t count_word = 0;
-            uint8_t list_size = 2;
-            list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
-            list_size += READ_FLAG(names->flags, flag_i);
-
+            stat(names->dirs_content->d_name, &names->filestat);
             names->list[count_line] = (char **) malloc(sizeof(char *) * list_size);
 
             if(READ_FLAG(names->flags, flag_i)) {
                 names->list[count_line][count_word++] = serial_number(names->filestat);     //0
             }
-
+            
             if(READ_FLAG(names->flags, flag_l)) {
                 names->list[count_line][count_word++] = permision(names->filestat);         //1 
                 names->list[count_line][count_word++] = link_param(names->filestat);        //2 
@@ -49,14 +50,14 @@ void print_dirs(t_names * names)
             names->list[count_line][count_word++] = name(names->dirs_content);              //7
             names->list[count_line][count_word] = NULL;                                     //8
             names->list[++count_line] = NULL;
-            names->dirs_content = readdir(names->folder);
+            next_dir(names);
         }
 
         print_total(names);
         sort(names);
         mx_print_list(names->list, dilim1, dilim2);
 
-        if(++i != names->dirs_count) { 
+        if(++index != names->dirs_count) { 
             mx_printchar('\n');
         }
 
@@ -65,33 +66,27 @@ void print_dirs(t_names * names)
     }
 }
 
-// char *total(char *dir_name) {
-//     DIR *folder = NULL;
-//     uint32_t sum = 0;
-//     struct dirent *entry = NULL;
-//     struct stat filestat;
-//     char *total;
+void next_dir(t_names *names)
+{
+    while((names->dirs_content = readdir(names->folder)) != NULL) {
 
-//     folder = opendir(dir_name);  
-    
-//     if(folder == NULL) {   
-//         perror("Unable to read directory");
-//     }
-
-//     entry = readdir(folder);
-
-//     while(entry) {
-//         stat(entry->d_name, &filestat);
-//         sum += filestat.st_blocks;
-//         entry = readdir(folder);
-//     }
-//     closedir(folder);
-//     char *temp = mx_strjoin("total ", mx_itoa(sum));
-//     total = mx_strjoin(temp, "\n");
-//     mx_strdel(&temp);
-
-//     return total;
-// }
+        if((!mx_strcmp(names->dirs_content->d_name, ".")    ||
+            !mx_strcmp(names->dirs_content->d_name, ".."))  &&
+            !READ_FLAG(names->flags, flag_a)) {
+            // printf("File: %s\tsceep\n", names->dirs_content->d_name); //debug
+            continue;
+        }
+        else if(!mx_strncmp(names->dirs_content->d_name, ".", 1)    &&
+                !READ_FLAG(names->flags, flag_A | flag_a)) {
+            // printf("File: %s\tsceep\n", names->dirs_content->d_name); //debug
+            continue;
+        }
+        else {
+            // printf("File: %s\tread\n", names->dirs_content->d_name); //debug
+            break;
+        }
+    }
+}
 
 void delete_list(t_names *names)
 {

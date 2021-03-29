@@ -5,8 +5,8 @@ void mx_print_list(char ***list, char *dilim1, char *dilim2)
     if(list == NULL || dilim1 == NULL || dilim2 == NULL)
         return;
 
-    for(int i = 0; list[i] != NULL;) {
-        int j = 0;
+    for(uint16_t i = 0; list[i] != NULL;) {
+        uint8_t j = 0;
         mx_printstr(list[i][j++]);
 
         for(; list[i][j] != NULL; ++j) {

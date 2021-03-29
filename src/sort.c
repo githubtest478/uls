@@ -6,7 +6,7 @@ static void sort_by_alphabet(t_names *names)
     index += READ_FLAG(names->flags, flag_l) ? 6 : 0;
     index += READ_FLAG(names->flags, flag_i);
 
-    for(uint8_t i = 0; i < names->file_count - 1; ++i) {
+    for(uint16_t i = 0; i < names->file_count - 1; ++i) {
         for(uint8_t j = 0; j < names->file_count; ++j) {
             if(READ_FLAG(names->flags, flag_r) ? 
                 mx_strcmp(names->list[i][index], names->list[j][index]) > 0 : 
