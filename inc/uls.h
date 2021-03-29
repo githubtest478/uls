@@ -109,4 +109,7 @@ char *last_modify(struct stat filestat);
 char *last_created(struct stat filestat);
 char *name(struct dirent *entry);
 
+//debug function
+void print_set_flags(t_names *names);
+
 #endif /* ULS_H */

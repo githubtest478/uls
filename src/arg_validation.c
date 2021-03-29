@@ -34,4 +34,6 @@ void arg_validation(int argn, char **argv, t_names *names)
         names->dirs[0] = ".";
         names->dirs_count++;
     }
+
+    // print_set_flags(names);
 }
