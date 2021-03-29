@@ -41,8 +41,8 @@ char *group(struct stat filestat)
 
 char *size(struct stat filestat)
 {
-    //return mx_itoa(filestat.st_size); 
-    return mx_itoa(filestat.st_blksize);
+    return mx_itoa(filestat.st_size); 
+    //return mx_itoa(filestat.st_blksize);
 }
 
 char *last_modify(struct stat filestat)
@@ -51,6 +51,13 @@ char *last_modify(struct stat filestat)
     char *a = ctime(&modify_time);  
     return mx_strndup(a + 4, 12);
 }
+
+char *last_created(struct stat filestat)
+{
+    time_t modify_time = filestat.st_mtime; 
+    char *a = ctime(&modify_time);  
+    return mx_strndup(a + 4, 12);
+}//need to be developed
 
 char *name(struct dirent *entry)
 {

@@ -32,7 +32,6 @@ void print_dirs(t_names * names)
         
         while(names->dirs_content) {
             uint8_t count_word = 0;
-            stat(names->dirs_content->d_name, &names->filestat);
             names->list[count_line] = (char **) malloc(sizeof(char *) * list_size);
 
             if(READ_FLAG(names->flags, flag_i)) {
@@ -69,20 +68,18 @@ void print_dirs(t_names * names)
 void next_dir(t_names *names)
 {
     while((names->dirs_content = readdir(names->folder)) != NULL) {
+        stat(names->dirs_content->d_name, &names->filestat);
 
         if((!mx_strcmp(names->dirs_content->d_name, ".")    ||
             !mx_strcmp(names->dirs_content->d_name, ".."))  &&
             !READ_FLAG(names->flags, flag_a)) {
-            // printf("File: %s\tsceep\n", names->dirs_content->d_name); //debug
             continue;
         }
         else if(!mx_strncmp(names->dirs_content->d_name, ".", 1)    &&
                 !READ_FLAG(names->flags, flag_A | flag_a)) {
-            // printf("File: %s\tsceep\n", names->dirs_content->d_name); //debug
             continue;
         }
         else {
-            // printf("File: %s\tread\n", names->dirs_content->d_name); //debug
             break;
         }
     }

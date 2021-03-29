@@ -10,7 +10,6 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_one);
     }
     else if(c == 'A') { //the same grup as -a -A
-        RESET_FLAG(names->flags, flag_a);
         SET_FLAG(names->flags, flag_A);
     }
     else if(c == 'a') { //the same grup as -a -A
@@ -82,4 +81,16 @@ void set_flags(t_names *names, char c)
         exit(1);
     }
     //printf("Flag: %d\n", names->flags);
+}
+
+void print_set_flags(t_names *names) //debug function
+{
+    for(uint32_t i = 0; i < flag_6; ++i) {
+        uint32_t flag = names->flags & 1 << i;
+        if(!!flag) {
+            switch(flag) {
+                
+            }
+        }
+    }
 }

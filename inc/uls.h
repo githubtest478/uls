@@ -48,7 +48,7 @@
 
 enum e_flagset {
     clear_flags =   ((uint32_t)0x00000000U),    
-    flag_At     =   ((uint32_t)0x00000001U),    //-@ Display extended attribute keys and sizes.
+    flag_At     =   ((uint32_t)0x00000001U),    //-@ Display extended attribute keys and sizes in long (-l) output
     flag_one    =   ((uint32_t)0x00000002U),    //-1 Stream output format; Force output to be one entry per line.
     flag_A      =   ((uint32_t)0x00000004U),    //-A List all entries including those starting with a dot . Except for . and ..
     flag_a      =   ((uint32_t)0x00000008U),    //-a List all entries including those starting with a dot .
@@ -106,6 +106,7 @@ char *owner(struct stat filestat);
 char *group(struct stat filestat);
 char *size(struct stat filestat);
 char *last_modify(struct stat filestat);
+char *last_created(struct stat filestat);
 char *name(struct dirent *entry);
 
 #endif /* ULS_H */
