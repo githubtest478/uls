@@ -78,12 +78,16 @@ enum e_flagset {
 typedef struct s_names {
     char **dirs;
     char ***list;
-    struct stat filestat;
-    struct dirent *dirs_content;    //ino_t  d_ino       File serial number.
+    struct stat *filestat;
+    struct dirent **dirs_content;    //ino_t  d_ino       File serial number.
                                     //char   d_name[]    Filename string of entry.
-    uint8_t dirs_count;
-    uint32_t file_count;
+    uint64_t total_size;
     uint32_t flags;
+    uint32_t count_file;
+    uint32_t count_line;
+    uint8_t count_word;
+    uint8_t dirs_count;
+    uint8_t dirs_index;
     DIR *folder;
 }              t_names;
 
@@ -92,13 +96,15 @@ void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
 void mx_test_open_curent_dir(t_names *names);
 void print_dirs(t_names * names);
-void count_files(t_names *names);
+void read_files_struct(t_names *names);
 void delete_list(t_names *names);
 void print_total(t_names * names);
 void sort(t_names *names);
 void next_dir(t_names *names);
 void init_list(t_names *names);
 void form_colums(t_names *names);
+void fill_list(t_names *names);
+void count_files(t_names *names);
 
 char *serial_number(struct stat *filestat);
 char *permision(struct stat *filestat);

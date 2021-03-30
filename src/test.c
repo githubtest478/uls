@@ -35,17 +35,6 @@ char *mx_itoa(long long number) {
     return str;
 }
 
-void count_files(t_names *names) {
-    names->file_count = 0;
-    next_dir(names);
-
-    while(names->dirs_content) {
-        next_dir(names);
-        names->file_count++;
-    }
-    closedir(names->folder);
-}
-
 void recursion_R_flag_test(char *str) {     //будет приходить t_names *names и char *str-имя директории для открытия  (!!! приходят только директории не файлы!!!)
     DIR * dirp;
     struct dirent * entry;

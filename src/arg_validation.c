@@ -2,15 +2,25 @@
 
 void init_dir_structure(t_names *names)
 {
+    RESET_FLAG(names->flags, ~clear_flags);
     names->flags |= flag_C;
-    names->dirs = (char **) malloc(sizeof(char *));
     names->dirs_count = 0;
-    names->file_count = 0;
+    names->count_file = 0;
+    names->total_size = 0;
+    names->count_line = 0;
+    names->count_word = 0;
+    names->dirs_index = 0;
+    names->dirs = NULL;
+    names->list = NULL;
+    names->filestat = NULL;
+    names->dirs_content = NULL;
+    names->folder = NULL;
 }
 
 void arg_validation(int argn, char **argv, t_names *names)
 {
     init_dir_structure(names);
+    names->dirs = (char **) malloc(sizeof(char *) * argn);
 
     for(uint8_t i = 1; i < argn; ++i) {
         if(!mx_strncmp(argv[i], "--", 2)) {
@@ -22,7 +32,8 @@ void arg_validation(int argn, char **argv, t_names *names)
             }   //set flags with "-" prefix
         }
         else {
-            names->dirs[names->dirs_count++] = argv[i];   //read dirs to structure
+            names->dirs[names->dirs_count] = argv[i];   //read dirs to structure
+            names->dirs_count++;
         }
         
         if(errno) {

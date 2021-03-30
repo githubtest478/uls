@@ -5,15 +5,14 @@ static void sort_by_alphabet(t_names *names)
     uint8_t index = 0;
     index += READ_FLAG(names->flags, flag_l) ? 6 : 0;
     index += READ_FLAG(names->flags, flag_i);
-
-    for(uint16_t i = 0; i < names->file_count - 1; ++i) {
-        for(uint8_t j = 0; j < names->file_count; ++j) {
+    for(uint16_t j = 0; j < names->count_file; ++j) {
+        for(uint16_t i = 0; i < names->count_file - 1; ++i) {
             if(READ_FLAG(names->flags, flag_r) ? 
-                mx_strcmp(names->list[i][index], names->list[j][index]) > 0 : 
-                mx_strcmp(names->list[i][index], names->list[j][index]) < 0) {
+                mx_strcmp(names->list[i][index], names->list[i + 1][index]) > 0 : 
+                mx_strcmp(names->list[i][index], names->list[i + 1][index]) < 0) {
                 char** temp = names->list[i];
-                names->list[i] = names->list[j];
-                names->list[j] = temp;
+                names->list[i] = names->list[i + 1];
+                names->list[i + 1] = temp;
             }
         }
     }
@@ -30,12 +29,12 @@ static void sort_by_size(t_names *names)
     index += READ_FLAG(names->flags, flag_l) ? 4 : 5;
     index += READ_FLAG(names->flags, flag_i);
 
-    for(uint16_t i = 0; i < names->file_count - 1; ++i) {
-        for(uint8_t j = 0; j < names->file_count; ++j) {
-            if(mx_atoi(names->list[i][index]) < mx_atoi(names->list[j][index])) {
+    for(uint16_t j = 0; j < names->count_file; ++j) {
+        for(uint16_t i = 0; i < names->count_file - 1; ++i) {
+            if(mx_atoi(names->list[i][index]) < mx_atoi(names->list[i + 1][index])) {
                 char** temp = names->list[i];
-                names->list[i] = names->list[j];
-                names->list[j] = temp;
+                names->list[i] = names->list[i + 1];
+                names->list[i + 1] = temp;
             }
         }
     }

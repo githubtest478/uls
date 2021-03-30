@@ -45,7 +45,7 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_r);
     }
     else if(c == 'S') { //sort grup -c -r -t -S -f
-        RESET_FLAG(names->flags, SORT_MASK);
+        RESET_FLAG(names->flags, SORT_MASK | flag_C);
         SET_FLAG(names->flags, flag_S);
     }
     else if(c == 'T') {
@@ -59,7 +59,7 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_u);
     }
     else if(c == 'f') { //sort grup -c -r -t -S -f
-        RESET_FLAG(names->flags, SORT_MASK | flag_l); //optional set -s
+        RESET_FLAG(names->flags, SORT_MASK); //optional set -s
         SET_FLAG(names->flags, flag_f | flag_a); //optional set -U
     }
     else if(c == 'i') {
