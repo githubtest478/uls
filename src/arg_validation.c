@@ -8,11 +8,12 @@ void init_dir_structure(t_names *names)
     names->count_file = 0;
     names->total_size = 0;
     names->count_line = 0;
-    names->count_word = 0;
     names->dirs_index = 0;
+    names->list_size = 0;
     names->dirs = NULL;
+    names->dilim1 = NULL;
+    names->dilim2 = NULL;
     names->list = NULL;
-    names->filestat = NULL;
     names->dirs_content = NULL;
     names->folder = NULL;
 }
@@ -45,6 +46,5 @@ void arg_validation(int argn, char **argv, t_names *names)
         names->dirs[0] = ".";
         names->dirs_count++;
     }
-
     // print_set_flags(names);
 }

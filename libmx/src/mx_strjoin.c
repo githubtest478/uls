@@ -11,7 +11,7 @@ char *mx_strjoin(char const *s1, char const *s2)
             return mx_strdup(s1);
     }
 
-    char *new_str = mx_strnew(mx_strlen(s1) + mx_strlen(s1));
+    char *new_str = mx_strnew(mx_strlen(s1) + mx_strlen(s2));
     
     if(!new_str)
         return NULL;

@@ -78,16 +78,18 @@ enum e_flagset {
 typedef struct s_names {
     char **dirs;
     char ***list;
-    struct stat *filestat;
-    struct dirent **dirs_content;    //ino_t  d_ino       File serial number.
+    struct stat filestat;
+    struct dirent *dirs_content;    //ino_t  d_ino       File serial number.
                                     //char   d_name[]    Filename string of entry.
     uint64_t total_size;
     uint32_t flags;
     uint32_t count_file;
     uint32_t count_line;
-    uint8_t count_word;
     uint8_t dirs_count;
     uint8_t dirs_index;
+    uint8_t list_size;
+    char *dilim1;
+    char *dilim2;
     DIR *folder;
 }              t_names;
 
@@ -103,18 +105,20 @@ void sort(t_names *names);
 void next_dir(t_names *names);
 void init_list(t_names *names);
 void form_colums(t_names *names);
-void fill_list(t_names *names);
+// void fill_list(t_names *names);
 void count_files(t_names *names);
+void fill_line(t_names *names);
+void print_list(t_names *names);
 
-char *serial_number(struct stat *filestat);
-char *permision(struct stat *filestat);
-char *link_param(struct stat *filestat);
-char *owner(struct stat *filestat);
-char *group(struct stat *filestat);
-char *size(struct stat *filestat);
-char *last_modify(struct stat *filestat);
-char *last_created(struct stat *filestat);
-char *name(struct dirent *entry);
+char *serial_number(t_names *names);
+char *permision(t_names *names);
+char *link_param(t_names *names);
+char *owner(t_names *names);
+char *group(t_names *names);
+char *size(t_names *names);
+char *last_modify(t_names *names);
+char *last_created(t_names *names);
+char *name(t_names *names);
 
 //debug function
 void print_set_flags(t_names *names);

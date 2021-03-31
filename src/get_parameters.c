@@ -1,65 +1,64 @@
 #include "uls.h"
 
-char *serial_number(struct stat *filestat) 
+char *serial_number(t_names *names) 
 {
-    return mx_itoa(filestat->st_ino);
+    return mx_itoa(names->filestat.st_ino);
 }
 
-char *permision(struct stat *filestat)
+char *permision(t_names *names)
 {   
     char *permision = mx_strnew(10);
     
-    permision[0] = S_ISDIR(filestat->st_mode) ? 'd' : '-';
-    permision[1] = (filestat->st_mode & S_IRUSR) ? 'r' : '-';
-    permision[2] = (filestat->st_mode & S_IWUSR) ? 'w' : '-';
-    permision[3] = (filestat->st_mode & S_IXUSR) ? 'x' : '-';
-    permision[4] = (filestat->st_mode & S_IRGRP) ? 'r' : '-';
-    permision[5] = (filestat->st_mode & S_IWGRP) ? 'w' : '-';
-    permision[6] = (filestat->st_mode & S_IXGRP) ? 'x' : '-';
-    permision[7] = (filestat->st_mode & S_IROTH) ? 'r' : '-';
-    permision[8] = (filestat->st_mode & S_IWOTH) ? 'w' : '-';
-    permision[9] = (filestat->st_mode & S_IXOTH) ? 'x' : '-';
+    permision[0] = S_ISDIR(names->filestat.st_mode) ? 'd' : '-';
+    permision[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
+    permision[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
+    permision[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
+    permision[4] = (names->filestat.st_mode & S_IRGRP) ? 'r' : '-';
+    permision[5] = (names->filestat.st_mode & S_IWGRP) ? 'w' : '-';
+    permision[6] = (names->filestat.st_mode & S_IXGRP) ? 'x' : '-';
+    permision[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
+    permision[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
+    permision[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
 
     return permision;
 }
 
-char *link_param(struct stat *filestat)
+char *link_param(t_names *names)
 {
-    return mx_itoa(filestat->st_nlink);
+    return mx_itoa(names->filestat.st_nlink);
 }
 
-char *owner(struct stat *filestat)
+char *owner(t_names *names)
 {
-    struct passwd *pass = getpwuid(filestat->st_uid);
+    struct passwd *pass = getpwuid(names->filestat.st_uid);
     return mx_strdup(pass->pw_name);
 }
 
-char *group(struct stat *filestat)
+char *group(t_names *names)
 {
-    return mx_itoa(filestat->st_gid);
+    return mx_itoa(names->filestat.st_gid);
 }
 
-char *size(struct stat *filestat)
+char *size(t_names *names)
 {
-    return mx_itoa(filestat->st_size); 
-    //return mx_itoa(filestat->st_blksize);
+    return mx_itoa(names->filestat.st_size); 
 }
 
-char *last_modify(struct stat *filestat)
+char *last_modify(t_names *names)
 {
-    time_t modify_time = filestat->st_mtime; 
+    time_t modify_time = names->filestat.st_mtime; 
     char *a = ctime(&modify_time);  
     return mx_strndup(a + 4, 12);
 }
 
-char *last_created(struct stat *filestat)
+char *last_created(t_names *names)
 {
-    time_t modify_time = filestat->st_mtime; 
+    time_t modify_time = names->filestat.st_mtime; 
     char *a = ctime(&modify_time);  
     return mx_strndup(a + 4, 12);
 }//need to be developed
 
-char *name(struct dirent *entry)
+char *name(t_names *names)
 {
-    return mx_strdup(entry->d_name);
+    return mx_strdup(names->dirs_content->d_name);
 }
