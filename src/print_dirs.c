@@ -2,7 +2,8 @@
 
 void print_dirs(t_names * names)
 {
-    names->dilim1 = READ_FLAG(names->flags, flag_l | flag_i) ? " "   : "";
+    // names->dilim1 = READ_FLAG(names->flags, flag_l | flag_i) ? " "   : " ";
+    names->dilim1 = " ";
     names->dilim2 = READ_FLAG(names->flags, flag_m)     ? ", "  :
                     READ_FLAG(names->flags, flag_one)   ? "\n"  :
                     READ_FLAG(names->flags, flag_C)     ? " "   : "";
@@ -10,6 +11,7 @@ void print_dirs(t_names * names)
     names->list_size = 2;
     names->list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
     names->list_size += READ_FLAG(names->flags, flag_i);
+    names->list_size += READ_FLAG(names->flags, flag_s);
    
     for(names->dirs_index = 0; names->dirs_index < names->dirs_count;) {
         read_files_struct(names);
@@ -19,9 +21,9 @@ void print_dirs(t_names * names)
             mx_printstr(":\n");
         }
 
-        // sort(names);
-        print_total(names);
+        sort(names);
         form_colums(names);
+        print_total(names);
         print_list(names);
 
         if(++names->dirs_index != names->dirs_count) { 
@@ -39,7 +41,6 @@ void form_colums(t_names *names)
     for(uint8_t i = 0; names->list[i]; ++i) {
         for(uint8_t j = 0; names->list[i][j + 1]; ++j) {
             uint8_t size = mx_strlen(names->list[i][j]);
-            
             if(size > max_size[j]) {
                 max_size[j] = size;
             }
@@ -61,22 +62,37 @@ void fill_line(t_names *names)
     uint8_t count_word = 0;
     names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size);
 
-    if(READ_FLAG(names->flags, flag_i)) {
+    if(READ_FLAG(names->flags, flag_S))
+        names->sort[names->count_line] += names->filestat.st_size;
+    else if(READ_FLAG(names->flags, flag_t))
+        names->sort[names->count_line] += names->filestat.st_mtime;
+    else if(READ_FLAG(names->flags, flag_c))
+        names->sort[names->count_line] += names->filestat.st_ctime;
+    
+    if(READ_FLAG(names->flags, flag_l | flag_s))
+        names->total_size += names->filestat.st_blocks;
+
+    if(READ_FLAG(names->flags, flag_i))
         names->list[names->count_line][count_word++] = serial_number(names);    //0
-    }
+    
+    if(READ_FLAG(names->flags, flag_s))
+        names->list[names->count_line][count_word++] = blocksize(names);        //1
 
     if(READ_FLAG(names->flags, flag_l)) {
         names->total_size += names->filestat.st_blocks;
-        names->list[names->count_line][count_word++] = permision(names);        //1 
-        names->list[names->count_line][count_word++] = link_param(names);       //2 
-        names->list[names->count_line][count_word++] = owner(names);            //3 
-        names->list[names->count_line][count_word++] = group(names);            //4 
-        names->list[names->count_line][count_word++] = size(names);             //5 
-        names->list[names->count_line][count_word++] = last_modify(names);      //6 
+        names->list[names->count_line][count_word++] = permision(names);        //2 
+        names->list[names->count_line][count_word++] = link_param(names);       //3 
+        names->list[names->count_line][count_word++] = owner(names);            //4 
+        names->list[names->count_line][count_word++] = group(names);            //5 
+        names->list[names->count_line][count_word++] = size(names);             //6
+        if(READ_FLAG(names->flags, flag_C))
+            names->list[names->count_line][count_word++] = last_modify(names);  //7
+        else if(READ_FLAG(names->flags, flag_c))
+            names->list[names->count_line][count_word++] = created(names);      //8
     }
 
-    names->list[names->count_line][count_word++] = name(names);                 //7
-    names->list[names->count_line++][count_word] = NULL;                        //8
+    names->list[names->count_line][count_word++] = name(names);                 //9
+    names->list[names->count_line++][count_word] = NULL;                       
     names->list[names->count_line] = NULL;
 }
 
@@ -129,7 +145,7 @@ void delete_list(t_names *names)
 }
 
 void print_total(t_names * names) {
-    if(!READ_FLAG(names->flags, flag_l))
+    if(!READ_FLAG(names->flags, flag_l | flag_s))
         return;
 
     char *temp = mx_strjoin("total ", mx_itoa(names->total_size));
@@ -160,6 +176,11 @@ void read_files_struct(t_names *names) {
     // }
 
     next_dir(names);
+
+    if(READ_FLAG(names->flags, flag_S | flag_t | flag_c)) { 
+        names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count_file);
+    }
+
     names->list = (char ***) malloc(sizeof(char **) * (names->count_file + 1));
     names->count_line = 0;
 

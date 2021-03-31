@@ -10,6 +10,7 @@ void init_dir_structure(t_names *names)
     names->count_line = 0;
     names->dirs_index = 0;
     names->list_size = 0;
+    names->sort = NULL;
     names->dirs = NULL;
     names->dilim1 = NULL;
     names->dilim2 = NULL;
@@ -30,7 +31,7 @@ void arg_validation(int argn, char **argv, t_names *names)
         else if(!mx_strncmp(argv[i], "-", 1)) {
             for(int j = 1; j < mx_strlen(argv[i]); ++j) {
                 set_flags(names, argv[i][j]);
-            }   //set flags with "-" prefix
+            }
         }
         else {
             names->dirs[names->dirs_count] = argv[i];   //read dirs to structure
@@ -46,5 +47,5 @@ void arg_validation(int argn, char **argv, t_names *names)
         names->dirs[0] = ".";
         names->dirs_count++;
     }
-    // print_set_flags(names);
+    print_set_flags(names);
 }

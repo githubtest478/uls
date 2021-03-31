@@ -49,14 +49,14 @@
 enum e_flagset {
     clear_flags =   ((uint32_t)0x00000000U),    
     flag_At     =   ((uint32_t)0x00000001U),    //-@ Display extended attribute keys and sizes in long (-l) output
-    flag_one    =   ((uint32_t)0x00000002U),    //-1 Stream output format; Force output to be one entry per line.
-    flag_A      =   ((uint32_t)0x00000004U),    //-A List all entries including those starting with a dot . Except for . and ..
-    flag_a      =   ((uint32_t)0x00000008U),    //-a List all entries including those starting with a dot .
-    flag_C      =   ((uint32_t)0x00000010U),    //-C Stream output format; Force multi-column output
-    flag_c      =   ((uint32_t)0x00000020U),    //-c Use time when file status was last changed for sorting or printing.
+    flag_one    =   ((uint32_t)0x00000002U),    //-1 Force output to be one entry per line.  This is the default when output is not to a terminal.
+    flag_A      =   ((uint32_t)0x00000004U),    //-A List all entries except for . and ..  Always set for the super-user.
+    flag_a      =   ((uint32_t)0x00000008U),    //-a Include directory entries whose names begin with a dot (.).
+    flag_C      =   ((uint32_t)0x00000010U),    //-C Force multi-column output; this is the default when output is to a terminal.
+    flag_c      =   ((uint32_t)0x00000020U),    //-c Use time when file status was last changed for sorting (-t) or long printing (-l).
     flag_e      =   ((uint32_t)0x00000040U),    //-e Print the Access Control List (ACL) associated with the file, if present, in long (-l) output.
-    flag_G      =   ((uint32_t)0x00000080U),    //-G Enable colour output.
-    flag_h      =   ((uint32_t)0x00000100U),    //-h used with -l and -s, print sizes like 1K 234M 2G etc.
+    flag_G      =   ((uint32_t)0x00000080U),    //-G Enable colorized output.  This option is equivalent to defining CLICOLOR in the environment.
+    flag_h      =   ((uint32_t)0x00000100U),    //-h When used with the -l option, use unit suffixes: Byte, Kilobyte, Megabyte, Gigabyte, Terabyte and Petabyte in order to reduce the number of digits to three or less using base 2 for sizes.
     flag_l      =   ((uint32_t)0x00000200U),    //-l use a long listing format
     flag_R      =   ((uint32_t)0x00000400U),    //-R recursively list subdirectories recursively
     flag_r      =   ((uint32_t)0x00000800U),    //-r Reverse the order of the sort to get reverse lexicographical order or the oldest entries first.
@@ -69,7 +69,7 @@ enum e_flagset {
     flag_x      =   ((uint32_t)0x00040000U),    //-x Stream output format; The same as -C, except that the multi-column output is produced with entries sorted across, rather than down, the columns.
     flag_p      =   ((uint32_t)0x00080000U),    //-p Write a slash (/) after each filename if that file is a directory.
     flag_m      =   ((uint32_t)0x00100000U),    //-m Stream output format; List files across the page, separated by commas.
-    flag_6      =   ((uint32_t)0x00200000U),    //Addition flag
+    flag_s      =   ((uint32_t)0x00200000U),    //-s Display the number of file system blocks actually used by each file, in units of 512 bytes, where partial units are rounded up to the next integer value.
     flag_7      =   ((uint32_t)0x00400000U),    //Addition flag
     flag_8      =   ((uint32_t)0x00800000U)     //Addition flag
 };
@@ -88,6 +88,7 @@ typedef struct s_names {
     uint8_t dirs_count;
     uint8_t dirs_index;
     uint8_t list_size;
+    uint32_t *sort;
     char *dilim1;
     char *dilim2;
     DIR *folder;
@@ -105,19 +106,19 @@ void sort(t_names *names);
 void next_dir(t_names *names);
 void init_list(t_names *names);
 void form_colums(t_names *names);
-// void fill_list(t_names *names);
 void count_files(t_names *names);
 void fill_line(t_names *names);
 void print_list(t_names *names);
 
 char *serial_number(t_names *names);
+char *blocksize(t_names *names);
 char *permision(t_names *names);
 char *link_param(t_names *names);
 char *owner(t_names *names);
 char *group(t_names *names);
 char *size(t_names *names);
 char *last_modify(t_names *names);
-char *last_created(t_names *names);
+char *created(t_names *names);
 char *name(t_names *names);
 
 //debug function

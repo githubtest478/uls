@@ -18,7 +18,7 @@ void set_flags(t_names *names, char c)
     }
     else if(c == 'C') { //the same grup as -x -C -l -m
         RESET_FLAG(names->flags, flag_x | flag_l | flag_m | flag_one);
-        SET_FLAG(names->flags, flag_C | flag_a);
+        SET_FLAG(names->flags, flag_C);
     }
     else if(c == 'c') { //sort grup -c -r -t -S -f
         RESET_FLAG(names->flags, SORT_MASK);
@@ -76,6 +76,9 @@ void set_flags(t_names *names, char c)
         RESET_FLAG(names->flags, flag_one | flag_l);
         SET_FLAG(names->flags, flag_m);
     }
+    else if(c == 's') {
+        SET_FLAG(names->flags, flag_s);
+    }
     else {
         perror(USAGE); //error flag didn't exist
         exit(1);
@@ -86,7 +89,7 @@ void set_flags(t_names *names, char c)
 //debug function
 void print_set_flags(t_names *names)
 {
-    for(uint32_t i = 0; i < 20; ++i) {
+    for(uint32_t i = 0; i < 24; ++i) {
         uint32_t flag = names->flags & 1 << i;
         if(!!flag) {
             switch(flag) {
@@ -153,6 +156,10 @@ void print_set_flags(t_names *names)
                 case flag_m:
                     mx_printstr("flag_m\n");
                     break;
+                case flag_s:
+                    mx_printstr("flag_s\n");
+                    break;
+                    
                 default:
                     break;
             }

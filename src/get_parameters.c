@@ -5,6 +5,11 @@ char *serial_number(t_names *names)
     return mx_itoa(names->filestat.st_ino);
 }
 
+char *blocksize(t_names *names) 
+{
+    return mx_itoa(names->filestat.st_blocks);
+}
+
 char *permision(t_names *names)
 {   
     char *permision = mx_strnew(10);
@@ -51,12 +56,12 @@ char *last_modify(t_names *names)
     return mx_strndup(a + 4, 12);
 }
 
-char *last_created(t_names *names)
+char *created(t_names *names)
 {
-    time_t modify_time = names->filestat.st_mtime; 
+    time_t modify_time = names->filestat.st_ctime; 
     char *a = ctime(&modify_time);  
     return mx_strndup(a + 4, 12);
-}//need to be developed
+}
 
 char *name(t_names *names)
 {
