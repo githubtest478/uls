@@ -83,7 +83,6 @@ void set_flags(t_names *names, char c)
         perror(USAGE); //error flag didn't exist
         exit(1);
     }
-    //printf("Flag: %d\n", names->flags);
 }
 
 //debug function

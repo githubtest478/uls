@@ -98,5 +98,6 @@ void mx_print_error(char *error);
 int mx_strncmp(const char *src, const char *str, size_t n);
 void mx_print_list(char ***list, char *dilim1, char *dilim2);
 char *mx_itoa(long long number);
+long long mx_round(long long num);
 
 #endif /* LIBMX_H */

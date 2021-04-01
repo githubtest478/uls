@@ -44,26 +44,70 @@ char *group(t_names *names)
     return mx_itoa(names->filestat.st_gid);
 }
 
-char *size(t_names *names)
-{
-    return mx_itoa(names->filestat.st_size); 
-}
-
-char *last_modify(t_names *names)
-{
-    time_t modify_time = names->filestat.st_mtime; 
-    char *a = ctime(&modify_time);  
-    return mx_strndup(a + 4, 12);
-}
-
-char *created(t_names *names)
-{
-    time_t modify_time = names->filestat.st_ctime; 
-    char *a = ctime(&modify_time);  
-    return mx_strndup(a + 4, 12);
-}
-
 char *name(t_names *names)
 {
     return mx_strdup(names->dirs_content->d_name);
+}
+
+char *get_time(t_names *names)
+{
+    time_t modify_time = 0;
+
+    if(READ_FLAG(names->flags, flag_C)){
+        modify_time = names->filestat.st_ctime;   
+    }
+    else if(READ_FLAG(names->flags, flag_c)) {
+        modify_time = names->filestat.st_ctime; 
+    }
+
+    char *a = ctime(&modify_time);
+    return mx_strndup(a + 4, 12); 
+} 
+
+char* get_size(t_names *names) 
+{
+    if(READ_FLAG(names->flags, flag_h)) {
+        uint64_t bite_size = names->filestat.st_size;
+        char *temp1 = NULL;
+        char *dimension = NULL;
+
+        if(bite_size < 1024) {
+            temp1 = mx_itoa(bite_size);
+            dimension = "B";
+        }
+        else { 
+            char *temp2 = NULL;
+            char *temp3 = NULL;
+
+            if(bite_size < 1048576) {
+                double res = (bite_size % 1024) / 102.4;
+                temp2 = mx_itoa(res);
+                temp3 = mx_itoa(bite_size / 1024);
+                dimension = "K";
+            }  
+            else if(bite_size < 1073741824) {
+                double res = (bite_size % 1048576) / 104857.6;
+                temp2 = mx_itoa(res);
+                temp3 = mx_itoa(bite_size / 1048576);
+                dimension = "M";
+            }
+            else if(bite_size < 1099511627776) {
+                double res = (bite_size % 1073741824);
+                temp2 = mx_itoa(res);
+                temp3 = mx_itoa(bite_size / 1073741824);
+                dimension = "G";
+            }
+            char *temp4 = mx_strjoin(temp3, ".");
+            temp1 = mx_strjoin(temp4, temp2);
+            free(temp2);
+            free(temp3);
+            free(temp4);
+        }
+
+        char *res = mx_strjoin(temp1, dimension);
+        free(temp1);
+        return res;
+    }
+    else
+        return mx_itoa(names->filestat.st_size); 
 }

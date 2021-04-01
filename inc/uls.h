@@ -116,9 +116,8 @@ char *permision(t_names *names);
 char *link_param(t_names *names);
 char *owner(t_names *names);
 char *group(t_names *names);
-char *size(t_names *names);
-char *last_modify(t_names *names);
-char *created(t_names *names);
+char* get_size(t_names *names);
+char *get_time(t_names *names);
 char *name(t_names *names);
 
 //debug function

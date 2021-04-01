@@ -84,14 +84,11 @@ void fill_line(t_names *names)
         names->list[names->count_line][count_word++] = link_param(names);       //3 
         names->list[names->count_line][count_word++] = owner(names);            //4 
         names->list[names->count_line][count_word++] = group(names);            //5 
-        names->list[names->count_line][count_word++] = size(names);             //6
-        if(READ_FLAG(names->flags, flag_C))
-            names->list[names->count_line][count_word++] = last_modify(names);  //7
-        else if(READ_FLAG(names->flags, flag_c))
-            names->list[names->count_line][count_word++] = created(names);      //8
+        names->list[names->count_line][count_word++] = get_size(names);         //6
+        names->list[names->count_line][count_word++] = get_time(names);         //7
     }
 
-    names->list[names->count_line][count_word++] = name(names);                 //9
+    names->list[names->count_line][count_word++] = name(names);                 //8
     names->list[names->count_line++][count_word] = NULL;                       
     names->list[names->count_line] = NULL;
 }
@@ -140,7 +137,7 @@ void delete_list(t_names *names)
         mx_del_strarr(&names->list[i++]);
     }
 
-    free(names->list);
+    free(names->list);  
     names->list = NULL;
 }
 
