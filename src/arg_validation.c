@@ -21,31 +21,39 @@ void init_dir_structure(t_names *names)
 
 void arg_validation(int argn, char **argv, t_names *names)
 {
-    init_dir_structure(names);
     names->dirs = (char **) malloc(sizeof(char *) * argn);
+    
+    if (argn > 1) {
+        uint8_t i = 1;
 
-    for(uint8_t i = 1; i < argn; ++i) {
-        if(!mx_strncmp(argv[i], "--", 2)) {
-            //set flags with "--" prefix (optional)
-        }
-        else if(!mx_strncmp(argv[i], "-", 1)) {
-            for(int j = 1; j < mx_strlen(argv[i]); ++j) {
-                set_flags(names, argv[i][j]);
+        while(i < argn) {
+            if(!mx_strncmp(argv[i], "-", 1)) {
+                for(int j = 1; j < mx_strlen(argv[i]); ++j) {
+                    set_flags(names, argv[i][j]);
+                }
+                ++i;
             }
+            else
+                break;
         }
-        else {
-            names->dirs[names->dirs_count] = argv[i];   //read dirs to structure
-            names->dirs_count++;
-        }
-        
-        if(errno) {
-            strerror(errno);
+
+        while(i < argn) {
+            names->folder = opendir(argv[i]);
+
+            if(names->folder) {
+                names->dirs[names->dirs_count++] = argv[i++];
+            }
+            else {
+                perror(argv[i++]);
+            }
+            
+            closedir(names->folder);
         }
     }
 
     if(names->dirs_count == 0) {
-        names->dirs[0] = ".";
-        names->dirs_count++;
+        names->dirs[names->dirs_count++] = ".";
     }
-    print_set_flags(names);
+
+    // print_set_flags(names);
 }

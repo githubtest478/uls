@@ -98,6 +98,7 @@ typedef struct s_names {
 void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
 void mx_test_open_curent_dir(t_names *names);
+void init_dir_structure(t_names *names);
 void print_dirs(t_names * names);
 void read_files_struct(t_names *names);
 void delete_list(t_names *names);
