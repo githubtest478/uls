@@ -12,9 +12,14 @@ char *blocksize(t_names *names)
 
 char *permision(t_names *names)
 {   
-    char *permision = mx_strnew(10);
-    
-    permision[0] = S_ISDIR(names->filestat.st_mode) ? 'd' : '-';
+    char *permision = mx_strnew(11);
+
+    permision[0] = S_ISLNK(names->filestat.st_mode) ? 'l' : 
+                   S_ISDIR(names->filestat.st_mode) ? 'd' : 
+                   S_ISREG(names->filestat.st_mode) ? '-' : '?';
+    // permision[0] = (names->filestat.st_mode & S_IFDIR) ? 'd' : 
+    //                (names->filestat.st_mode & S_IFLNK) ? 'l' : 
+    //                (names->filestat.st_mode & S_IFCHR) ? 'c' : '-';
     permision[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
     permision[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
     permision[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
@@ -24,7 +29,8 @@ char *permision(t_names *names)
     permision[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
     permision[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
     permision[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
-
+    permision[10] = S_ISSOCK(names->filestat.st_mode) ? '@' : ' ';
+    
     return permision;
 }
 

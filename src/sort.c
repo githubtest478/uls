@@ -5,6 +5,7 @@ static void sort_by_alphabet(t_names *names)
     uint8_t index = 0;
     index += READ_FLAG(names->flags, flag_l) ? 6 : 0;
     index += READ_FLAG(names->flags, flag_i);
+    index += READ_FLAG(names->flags, flag_s);
 
     for(uint16_t j = 0; j < names->count_line; ++j) {
         for(uint16_t i = 0; i < names->count_line - 1; ++i) {

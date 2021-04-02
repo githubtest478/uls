@@ -22,6 +22,7 @@ void print_dirs(t_names * names)
         }
 
         sort(names);
+        set_color(names);
         form_colums(names);
         print_total(names);
         print_list(names);
@@ -60,7 +61,10 @@ void form_colums(t_names *names)
 void fill_line(t_names *names)
 {
     uint8_t count_word = 0;
-    names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size);
+    if(S_ISLNK(names->filestat.st_mode))
+        names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size + 2);
+    else
+        names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size);
 
     if(READ_FLAG(names->flags, flag_S))
         names->sort[names->count_line] += names->filestat.st_size;
@@ -79,7 +83,6 @@ void fill_line(t_names *names)
         names->list[names->count_line][count_word++] = blocksize(names);        //1
 
     if(READ_FLAG(names->flags, flag_l)) {
-        names->total_size += names->filestat.st_blocks;
         names->list[names->count_line][count_word++] = permision(names);        //2 
         names->list[names->count_line][count_word++] = link_param(names);       //3 
         names->list[names->count_line][count_word++] = owner(names);            //4 
@@ -89,6 +92,11 @@ void fill_line(t_names *names)
     }
 
     names->list[names->count_line][count_word++] = name(names);                 //8
+    if(S_ISLNK(names->filestat.st_mode)) {
+        names->list[names->count_line][count_word++] = mx_strdup("->");         //9
+        names->list[names->count_line][count_word++] = mx_strdup("link_name");  //10 temporary
+    }
+        
     names->list[names->count_line++][count_word] = NULL;                       
     names->list[names->count_line] = NULL;
 }
@@ -184,12 +192,56 @@ void read_files_struct(t_names *names) {
     while(names->dirs_content) {
         char *temp1 = mx_strjoin("/", names->dirs_content->d_name);
         char *temp2 = mx_strjoin(names->dirs[names->dirs_index], temp1);
-        stat(temp2, &names->filestat);
+        lstat(temp2, &names->filestat);
         fill_line(names);  
+
+        /* Resorch
+        for(uint8_t i = 0; i < 16; ++i) {
+            mx_printchar(((0x8000 >> i) & names->filestat.st_mode) ? '1' : '0');
+            if(!((i + 1) % 4)) {
+                mx_printchar(' ');
+            }
+        }
+        mx_printchar('\n');
+        */
+
         next_dir(names);
         free(temp1);
         free(temp2);
     }
 
     closedir(names->folder);
+}
+
+void set_color(t_names *names)
+{
+    uint8_t index_name = 0;
+    index_name += READ_FLAG(names->flags, flag_l) ? 6 : 0;
+    index_name += READ_FLAG(names->flags, flag_i);
+    index_name += READ_FLAG(names->flags, flag_s);
+
+    uint8_t index_permision = 0;
+    index_permision += READ_FLAG(names->flags, flag_i);
+    index_permision += READ_FLAG(names->flags, flag_s);
+
+    if(READ_FLAG(names->flags, flag_G)) {
+        for(uint8_t i = 0; i < names->count_file; ++i)
+        {
+            char *temp1 = NULL;
+            char *temp2 = NULL;
+            if(names->list[i][index_permision][0] == 'd') {
+                temp1 = mx_strjoin(RED, names->list[i][index_name]);
+            }
+            else if(names->list[i][index_permision][0] == 'l') {
+                temp1 = mx_strjoin(GREEN, names->list[i][index_name]);
+            }
+            else {
+                temp1 = mx_strjoin(BLUE, names->list[i][index_name]);
+            }
+            temp2 = mx_strjoin(temp1, DEFAULT_COLLOR);
+            free(names->list[i][index_name]);
+            free(temp1);
+            names->list[i][index_name] = temp2;
+        }
+    }
 }
