@@ -85,26 +85,22 @@ typedef struct s_names {
     uint32_t flags;
     uint32_t count_file;
     uint32_t count_line;
+    uint32_t *sort;
     uint8_t dirs_count;
     uint8_t dirs_index;
     uint8_t list_size;
-    uint32_t *sort;
-    char *dilim1;
-    char *dilim2;
     DIR *folder;
 }              t_names;
 
 //functons
 void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
-void mx_test_open_curent_dir(t_names *names);
-void init_dir_structure(t_names *names);
+void mx_test_open_curent_dir(t_names *names); //delete if dont need
+void init_names_structure(t_names *names);
 void print_dirs(t_names * names);
 void read_files_struct(t_names *names);
 void delete_list(t_names *names);
-void print_total(t_names * names);
 void sort(t_names *names);
-void next_dir(t_names *names);
 void init_list(t_names *names);
 void LineUp(t_names *names);
 void count_files(t_names *names);
@@ -113,16 +109,15 @@ void print_list(t_names *names);
 
 char *get_serial_number(t_names *names);
 char *get_blocksize(t_names *names);
-char *get_permision(t_names *names);
+char *get_permission(t_names *names);
 char *get_link_param(t_names *names);
 char *get_owner(t_names *names);
 char *get_group(t_names *names);
-char* get_size(t_names *names);
+char *get_size(t_names *names);
 char *get_time(t_names *names);
 char *get_name(t_names *names);
 
 //debug function
 void print_set_flags(t_names *names);
-// void print_bin_double(double num);
 
 #endif /* ULS_H */

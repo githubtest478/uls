@@ -12,24 +12,6 @@ static int32_t round_bytes(double num)
     return integer_num;
 }
 
-static char *str_char_join(char const *s, char const c)
-{
-    if(s == NULL) {
-        char *new_str = mx_strnew(1);
-        new_str[0] = c;
-        return new_str;
-    }
-
-    char *new_str = mx_strnew(mx_strlen(s) + 1);
-    
-    if(!new_str)
-        return NULL;
-
-    new_str = mx_strcpy(new_str, s);
-    new_str[mx_strlen(s)] = c;
-    return new_str;
-}
-
 char *get_serial_number(t_names *names) 
 {
     return mx_itoa(names->filestat.st_ino);
@@ -40,25 +22,25 @@ char *get_blocksize(t_names *names)
     return mx_itoa(names->filestat.st_blocks);
 }
 
-char *get_permision(t_names *names)
+char *get_permission(t_names *names)
 {   
-    char *permision = mx_strnew(11);
+    char *permission = mx_strnew(11);
 
-    permision[0] = S_ISLNK(names->filestat.st_mode) ? 'l' : 
+    permission[0] = S_ISLNK(names->filestat.st_mode) ? 'l' : 
                    S_ISDIR(names->filestat.st_mode) ? 'd' : 
                    S_ISREG(names->filestat.st_mode) ? '-' : '?';
-    permision[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
-    permision[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
-    permision[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
-    permision[4] = (names->filestat.st_mode & S_IRGRP) ? 'r' : '-';
-    permision[5] = (names->filestat.st_mode & S_IWGRP) ? 'w' : '-';
-    permision[6] = (names->filestat.st_mode & S_IXGRP) ? 'x' : '-';
-    permision[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
-    permision[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
-    permision[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
-    permision[10] = S_ISSOCK(names->filestat.st_mode)  ? '@' : ' '; //need to be modify
+    permission[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
+    permission[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
+    permission[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
+    permission[4] = (names->filestat.st_mode & S_IRGRP) ? 'r' : '-';
+    permission[5] = (names->filestat.st_mode & S_IWGRP) ? 'w' : '-';
+    permission[6] = (names->filestat.st_mode & S_IXGRP) ? 'x' : '-';
+    permission[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
+    permission[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
+    permission[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
+    permission[10] = ' ';//S_ISSOCK(names->filestat.st_mode)  ? '@' : ' '; //need to be modify
     
-    return permision;
+    return permission;
 } 
 
 char *get_link_param(t_names *names)
@@ -110,10 +92,13 @@ char *get_time(t_names *names)
     time_t time;
 
     if(READ_FLAG(names->flags, flag_C)){
-        time = names->filestat.st_ctime;   
+        time = names->filestat.st_mtime;   
     }
     else if(READ_FLAG(names->flags, flag_c)) {
         time = names->filestat.st_ctime; 
+    }
+    else if(READ_FLAG(names->flags, flag_u)) {
+        time = names->filestat.st_atime; 
     }
 
     char *a = ctime(&time);
@@ -123,14 +108,15 @@ char *get_time(t_names *names)
 char* get_size(t_names *names) 
 {
     if(READ_FLAG(names->flags, flag_h)) {
-        uint8_t iteration = 0;
+        uint8_t dimention = 0;
         double bite_size = names->filestat.st_size;
         char *number = NULL;
-        char *dimention = "BKMGTPEZY";
-
+        char *dimention_symbol[] = {"B", "K", "M", "G", "T", "P", "E", "Z", "Y"};
+        // char *dimention_symbol2[] = {"b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"}; //optional for bits
+        
         while(bite_size > 1024) {
             bite_size /= 1024;
-            ++iteration;
+            ++dimention;
         }
 
         if(bite_size < 10) {
@@ -148,7 +134,7 @@ char* get_size(t_names *names)
             number = mx_itoa(round);
         }
 
-        char *res = str_char_join(number, dimention[iteration]);
+        char *res = mx_strjoin(number, dimention_symbol[dimention]);
         free(number);
         return res;
     }

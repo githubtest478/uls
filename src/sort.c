@@ -45,7 +45,7 @@ void sort(t_names *names)
     if(READ_FLAG(names->flags, flag_f)) {
         return;
     }
-    else if(READ_FLAG(names->flags, flag_t | flag_c | flag_S)) {
+    else if(READ_FLAG(names->flags, flag_t | flag_c | flag_S | flag_u)) {
         param_sort(names);
     }
     else if(READ_FLAG(names->flags, flag_r | flag_C)) {
