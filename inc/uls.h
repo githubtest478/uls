@@ -106,23 +106,23 @@ void print_total(t_names * names);
 void sort(t_names *names);
 void next_dir(t_names *names);
 void init_list(t_names *names);
-void form_colums(t_names *names);
+void LineUp(t_names *names);
 void count_files(t_names *names);
 void fill_line(t_names *names);
 void print_list(t_names *names);
-void set_color(t_names *names);
 
-char *serial_number(t_names *names);
-char *blocksize(t_names *names);
-char *permision(t_names *names);
-char *link_param(t_names *names);
-char *owner(t_names *names);
-char *group(t_names *names);
+char *get_serial_number(t_names *names);
+char *get_blocksize(t_names *names);
+char *get_permision(t_names *names);
+char *get_link_param(t_names *names);
+char *get_owner(t_names *names);
+char *get_group(t_names *names);
 char* get_size(t_names *names);
 char *get_time(t_names *names);
-char *name(t_names *names);
+char *get_name(t_names *names);
 
 //debug function
 void print_set_flags(t_names *names);
+// void print_bin_double(double num);
 
 #endif /* ULS_H */

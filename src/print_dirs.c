@@ -1,5 +1,32 @@
 #include "uls.h"
 
+static void LineUp_colum(t_names *names, uint8_t colum_num)
+{ 
+    uint8_t max_size = 0;
+
+    for(uint8_t i = 0; names->list[i]; ++i) {
+        if(mx_strlen(names->list[i][colum_num]) > max_size)
+            max_size = mx_strlen(names->list[i][colum_num]);
+    }
+
+    for(uint8_t i = 0; names->list[i]; ++i) {
+        uint8_t size = mx_strlen(names->list[i][colum_num]);
+        
+        if(size < max_size) {
+            char *sized_str = mx_strnew(max_size);
+            uint8_t space_count = 0;
+
+            for(; space_count < max_size - size;) {
+                sized_str[space_count++] = ' ';
+            }
+
+            mx_strcpy(&sized_str[space_count], names->list[i][colum_num]);
+            free(names->list[i][colum_num]);
+            names->list[i][colum_num] = sized_str;
+        }
+    }
+}
+
 void print_dirs(t_names * names)
 {
     // names->dilim1 = READ_FLAG(names->flags, flag_l | flag_i) ? " "   : " ";
@@ -22,8 +49,7 @@ void print_dirs(t_names * names)
         }
 
         sort(names);
-        set_color(names);
-        form_colums(names);
+        LineUp(names);
         print_total(names);
         print_list(names);
 
@@ -35,26 +61,21 @@ void print_dirs(t_names * names)
     }
 }
 
-void form_colums(t_names *names)
+void LineUp(t_names *names)
 {
-    uint8_t max_size[9] = {0};   
+    uint8_t lined_colum = 0;
 
-    for(uint8_t i = 0; names->list[i]; ++i) {
-        for(uint8_t j = 0; names->list[i][j + 1]; ++j) {
-            uint8_t size = mx_strlen(names->list[i][j]);
-            if(size > max_size[j]) {
-                max_size[j] = size;
-            }
-        }
+    if(READ_FLAG(names->flags, flag_i)) {
+        LineUp_colum(names, lined_colum++);
     }
-    for(uint8_t i = 0; names->list[i]; ++i) {
-        for(uint8_t j = 0; names->list[i][j + 1]; ++j) {
-            for(uint8_t k = 0; max_size[j] > mx_strlen(names->list[i][j]); ++k) {
-                char *temp = names->list[i][j];
-                names->list[i][j] = mx_strjoin(" ", temp);
-                free(temp);
-            }
-        }
+
+    if(READ_FLAG(names->flags, flag_s)) {
+        LineUp_colum(names, lined_colum++);
+    }
+
+    if(READ_FLAG(names->flags, flag_l)) {
+        LineUp_colum(names, ++lined_colum);
+        LineUp_colum(names, lined_colum + 3);
     }
 }
 
@@ -77,24 +98,24 @@ void fill_line(t_names *names)
         names->total_size += names->filestat.st_blocks;
 
     if(READ_FLAG(names->flags, flag_i))
-        names->list[names->count_line][count_word++] = serial_number(names);    //0
+        names->list[names->count_line][count_word++] = get_serial_number(names);    //0
     
     if(READ_FLAG(names->flags, flag_s))
-        names->list[names->count_line][count_word++] = blocksize(names);        //1
+        names->list[names->count_line][count_word++] = get_blocksize(names);        //1
 
     if(READ_FLAG(names->flags, flag_l)) {
-        names->list[names->count_line][count_word++] = permision(names);        //2 
-        names->list[names->count_line][count_word++] = link_param(names);       //3 
-        names->list[names->count_line][count_word++] = owner(names);            //4 
-        names->list[names->count_line][count_word++] = group(names);            //5 
-        names->list[names->count_line][count_word++] = get_size(names);         //6
-        names->list[names->count_line][count_word++] = get_time(names);         //7
+        names->list[names->count_line][count_word++] = get_permision(names);        //2 
+        names->list[names->count_line][count_word++] = get_link_param(names);       //3 
+        names->list[names->count_line][count_word++] = get_owner(names);            //4 
+        names->list[names->count_line][count_word++] = get_group(names);            //5 
+        names->list[names->count_line][count_word++] = get_size(names);             //6
+        names->list[names->count_line][count_word++] = get_time(names);             //7
     }
 
-    names->list[names->count_line][count_word++] = name(names);                 //8
-    if(S_ISLNK(names->filestat.st_mode)) {
-        names->list[names->count_line][count_word++] = mx_strdup("->");         //9
-        names->list[names->count_line][count_word++] = mx_strdup("link_name");  //10 temporary
+    names->list[names->count_line][count_word++] = get_name(names);                 //8
+    if(S_ISLNK(names->filestat.st_mode) && READ_FLAG(names->flags, flag_l)) {
+        names->list[names->count_line][count_word++] = mx_strdup("->");             //9
+        names->list[names->count_line][count_word++] = mx_strdup("link_name");      //10 temporary
     }
         
     names->list[names->count_line++][count_word] = NULL;                       
@@ -211,45 +232,4 @@ void read_files_struct(t_names *names) {
     }
 
     closedir(names->folder);
-}
-
-void set_color(t_names *names)
-{
-    if(READ_FLAG(names->flags, flag_G)) {
-        uint8_t index_name = 0;
-        index_name += READ_FLAG(names->flags, flag_l) ? 6 : 0;
-        index_name += READ_FLAG(names->flags, flag_i);
-        index_name += READ_FLAG(names->flags, flag_s);
-
-        uint8_t index_permision = 0;
-        index_permision += READ_FLAG(names->flags, flag_i);
-        index_permision += READ_FLAG(names->flags, flag_s);
-
-        const uint8_t filetype = 0;
-        const uint8_t executable_file = 3;
-
-        for(uint8_t i = 0; names->list[i]; ++i)
-        {
-            if(names->list[i][index_permision][filetype] == '-' &&
-               names->list[i][index_permision][executable_file] == '-') {
-                   continue;
-            }
-
-            char *temp1 = NULL;
-            char *temp2 = NULL;
-            if(names->list[i][index_permision][filetype] == 'd') {
-                temp1 = mx_strjoin(BLUE, names->list[i][index_name]);
-            }
-            else if(names->list[i][index_permision][filetype] == 'l') {
-                temp1 = mx_strjoin(MAGENTA, names->list[i][index_name]);
-            }
-            else if(names->list[i][index_permision][executable_file] == 'x') {
-                temp1 = mx_strjoin(RED, names->list[i][index_name]);
-            }
-            temp2 = mx_strjoin(temp1, DEFAULT_COLLOR);
-            free(names->list[i][index_name]);
-            free(temp1);
-            names->list[i][index_name] = temp2;
-        }
-    }
 }
