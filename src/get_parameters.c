@@ -17,9 +17,6 @@ char *permision(t_names *names)
     permision[0] = S_ISLNK(names->filestat.st_mode) ? 'l' : 
                    S_ISDIR(names->filestat.st_mode) ? 'd' : 
                    S_ISREG(names->filestat.st_mode) ? '-' : '?';
-    // permision[0] = (names->filestat.st_mode & S_IFDIR) ? 'd' : 
-    //                (names->filestat.st_mode & S_IFLNK) ? 'l' : 
-    //                (names->filestat.st_mode & S_IFCHR) ? 'c' : '-';
     permision[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
     permision[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
     permision[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';

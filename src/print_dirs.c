@@ -215,28 +215,36 @@ void read_files_struct(t_names *names) {
 
 void set_color(t_names *names)
 {
-    uint8_t index_name = 0;
-    index_name += READ_FLAG(names->flags, flag_l) ? 6 : 0;
-    index_name += READ_FLAG(names->flags, flag_i);
-    index_name += READ_FLAG(names->flags, flag_s);
-
-    uint8_t index_permision = 0;
-    index_permision += READ_FLAG(names->flags, flag_i);
-    index_permision += READ_FLAG(names->flags, flag_s);
-
     if(READ_FLAG(names->flags, flag_G)) {
-        for(uint8_t i = 0; i < names->count_file; ++i)
+        uint8_t index_name = 0;
+        index_name += READ_FLAG(names->flags, flag_l) ? 6 : 0;
+        index_name += READ_FLAG(names->flags, flag_i);
+        index_name += READ_FLAG(names->flags, flag_s);
+
+        uint8_t index_permision = 0;
+        index_permision += READ_FLAG(names->flags, flag_i);
+        index_permision += READ_FLAG(names->flags, flag_s);
+
+        const uint8_t filetype = 0;
+        const uint8_t executable_file = 3;
+
+        for(uint8_t i = 0; names->list[i]; ++i)
         {
+            if(names->list[i][index_permision][filetype] == '-' &&
+               names->list[i][index_permision][executable_file] == '-') {
+                   continue;
+            }
+
             char *temp1 = NULL;
             char *temp2 = NULL;
-            if(names->list[i][index_permision][0] == 'd') {
-                temp1 = mx_strjoin(RED, names->list[i][index_name]);
-            }
-            else if(names->list[i][index_permision][0] == 'l') {
-                temp1 = mx_strjoin(GREEN, names->list[i][index_name]);
-            }
-            else {
+            if(names->list[i][index_permision][filetype] == 'd') {
                 temp1 = mx_strjoin(BLUE, names->list[i][index_name]);
+            }
+            else if(names->list[i][index_permision][filetype] == 'l') {
+                temp1 = mx_strjoin(MAGENTA, names->list[i][index_name]);
+            }
+            else if(names->list[i][index_permision][executable_file] == 'x') {
+                temp1 = mx_strjoin(RED, names->list[i][index_name]);
             }
             temp2 = mx_strjoin(temp1, DEFAULT_COLLOR);
             free(names->list[i][index_name]);
