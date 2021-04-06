@@ -88,7 +88,6 @@ typedef struct s_names {
     uint32_t *sort;
     uint8_t dirs_count;
     uint8_t dirs_index;
-    uint8_t list_size;
     DIR *folder;
 }              t_names;
 

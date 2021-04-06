@@ -39,7 +39,7 @@ void read_files_struct(t_names *names) {
 
     next_dir(names);
 
-    if(READ_FLAG(names->flags, flag_S | flag_t | flag_c)) { 
+    if(READ_FLAG(names->flags, flag_S | flag_t | flag_c | flag_u)) { 
         names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count_file);
     }
 

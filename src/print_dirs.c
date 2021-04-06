@@ -20,7 +20,7 @@ void print_dirs(t_names * names)
             mx_printstr(names->dirs[names->dirs_index]);
             mx_printstr(":\n");
         }
-
+        
         sort(names);
         LineUp(names);
         print_total(names);

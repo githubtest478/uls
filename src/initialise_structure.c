@@ -8,7 +8,6 @@ void init_names_structure(t_names *names)
     names->dirs_index = 0;
     names->count_file = 0;
     names->count_line = 0;
-    names->list_size = 0;
     names->total_size = 0;
     names->sort = NULL;
     names->dirs = NULL;

@@ -2,6 +2,7 @@
 
 static void aditional_parameters(t_names *names)
 {
+    //sort parameters
     if(READ_FLAG(names->flags, flag_f));
     else if(READ_FLAG(names->flags, flag_S))
         names->sort[names->count_line] += names->filestat.st_size;
@@ -12,6 +13,7 @@ static void aditional_parameters(t_names *names)
     else if(READ_FLAG(names->flags, flag_u))
         names->sort[names->count_line] += names->filestat.st_atime;
 
+    //count parametrs
     if(READ_FLAG(names->flags, flag_l | flag_s))
         names->total_size += names->filestat.st_blocks;
 }
@@ -19,11 +21,15 @@ static void aditional_parameters(t_names *names)
 void fill_line(t_names *names)
 {
     uint8_t count_word = 0;
+    uint8_t list_size = 2;
+    list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
+    list_size += READ_FLAG(names->flags, flag_i);
+    list_size += READ_FLAG(names->flags, flag_s);
 
     if(S_ISLNK(names->filestat.st_mode))
-        names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size + 2);
+        names->list[names->count_line] = (char **) malloc(sizeof(char *) * list_size + 2);
     else
-        names->list[names->count_line] = (char **) malloc(sizeof(char *) * names->list_size);
+        names->list[names->count_line] = (char **) malloc(sizeof(char *) * list_size);
     
     aditional_parameters(names);
 
@@ -56,17 +62,12 @@ void fill_line(t_names *names)
 void print_list(t_names *names)
 {
     char *dilim1 = " ";
-    char *dilim2 = READ_FLAG(names->flags, flag_m)     ? ", "  :
-                    READ_FLAG(names->flags, flag_one)   ? "\n"  :
-                    READ_FLAG(names->flags, flag_C)     ? " "   : "";
+    char *dilim2 = READ_FLAG(names->flags, flag_m)   ? ", "  :
+                   READ_FLAG(names->flags, flag_one) ? "\n"  :
+                   READ_FLAG(names->flags, flag_C)   ? " "   : "";
 
-    uint8_t list_size = 2;
-    list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
-    list_size += READ_FLAG(names->flags, flag_i);
-    list_size += READ_FLAG(names->flags, flag_s);
-
-    for(int i = 0, j = 0; names->list[i] != NULL;) {
-
+    for(uint8_t i = 0; names->list[i] != NULL;) {
+        uint8_t  j = 0;
         mx_printstr(names->list[i][j++]);
 
         for(; names->list[i][j] != NULL; ++j) {
