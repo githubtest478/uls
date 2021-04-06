@@ -26,9 +26,11 @@ char *get_permission(t_names *names)
 {   
     char *permission = mx_strnew(11);
 
-    permission[0] = S_ISLNK(names->filestat.st_mode) ? 'l' : 
-                   S_ISDIR(names->filestat.st_mode) ? 'd' : 
-                   S_ISREG(names->filestat.st_mode) ? '-' : '?';
+    permission[0] = S_ISDIR(names->filestat.st_mode) ? 'd' : 
+                    S_ISREG(names->filestat.st_mode) ? '-' : 
+                    S_ISLNK(names->filestat.st_mode) ? 'l' : 
+                    S_ISBLK(names->filestat.st_mode) ? 'b' :
+                    S_ISCHR(names->filestat.st_mode) ? 'c' : '?';
     permission[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
     permission[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
     permission[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
@@ -102,8 +104,12 @@ char *get_time(t_names *names)
     }
 
     char *a = ctime(&time);
-    return mx_strndup(a + 4, 12); 
-} //work incorect!!! need to be remastered 
+
+    if(READ_FLAG(names->flags, flag_T))
+        return mx_strndup(a + 4, 20); 
+    else
+        return mx_strndup(a + 4, 12); 
+}
 
 char* get_size(t_names *names) 
 {

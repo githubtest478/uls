@@ -20,7 +20,7 @@
 #define RESET_FLAG(reg, flag) (reg &= ~(flag)) //use to clear the flag
 #define READ_FLAG(reg, flag) !!(reg & (flag)) //use to identify if flag(see e_flagset) is set
 
-#define SORT_MASK (flag_r | flag_S | flag_t | flag_f | flag_c)
+#define SORT_MASK (flag_r | flag_S | flag_t | flag_f | flag_c | flag_u)
 
 //error massages
 #define USAGE "usage: uls [-l] [file ...]\n"
