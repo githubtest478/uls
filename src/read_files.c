@@ -23,8 +23,12 @@ void count_files(t_names *names)
     names->count_file = 0;
     struct dirent *curent_dir;
     
-    while((curent_dir = readdir(names->folder)))
+    while((curent_dir = readdir(names->folder))) {
         names->count_file++;
+        
+        if(READ_FLAG(names->flags, flag_R) && curent_dir->d_type == DT_DIR && curent_dir->d_name[0] != '.')
+            names->count_dirs++;
+    }
 
     closedir(names->folder);
 }
@@ -44,24 +48,13 @@ void read_files_struct(t_names *names) {
     }
 
     names->list = (char ***) malloc(sizeof(char **) * (names->count_file + 1));
-    names->count_line = 0;
+    names->count_line = 0; 
 
     while(names->dirs_content) {
         char *temp1 = mx_strjoin("/", names->dirs_content->d_name);
         char *temp2 = mx_strjoin(names->dirs[names->dirs_index], temp1);
         lstat(temp2, &names->filestat);
         fill_line(names);  
-
-        /* Resorch
-        for(uint8_t i = 0; i < 16; ++i) {
-            mx_printchar(((0x8000 >> i) & names->filestat.st_mode) ? '1' : '0');
-            if(!((i + 1) % 4)) {
-                mx_printchar(' ');
-            }
-        }
-        mx_printchar('\n');
-        */
-
         next_dir(names);
         free(temp1);
         free(temp2);

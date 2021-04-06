@@ -3,7 +3,8 @@
 void arg_validation(int argn, char **argv, t_names *names)
 {
     names->dirs = (char **) malloc(sizeof(char *) * argn);
-    
+    uint8_t dirs_count = 0;
+
     if (argn > 1) {
         uint8_t i = 1;
 
@@ -22,7 +23,8 @@ void arg_validation(int argn, char **argv, t_names *names)
             names->folder = opendir(argv[i]);
 
             if(names->folder) {
-                names->dirs[names->dirs_count++] = argv[i++];
+                names->dirs[dirs_count++] = mx_strdup(argv[i++]);
+                names->dirs[dirs_count] = NULL;
             }
             else {
                 perror(argv[i++]);
@@ -32,8 +34,9 @@ void arg_validation(int argn, char **argv, t_names *names)
         }
     }
 
-    if(names->dirs_count == 0) {
-        names->dirs[names->dirs_count++] = ".";
+    if(dirs_count == 0) {
+        names->dirs[dirs_count++] = ".";
+        names->dirs[dirs_count] = NULL;
     }
 
     // print_set_flags(names);

@@ -1,70 +1,54 @@
 #include "uls.h"
 
-static int recursion_R_flag_count(t_names *names) { 
-    DIR *folder;
-    int count = 0;
-  
-        folder = opendir(names->dirs[names->dirs_index]);
-        while((names->dirs_content = readdir(folder)) != NULL) {
-            if(names->dirs_content->d_type == DT_DIR && names->dirs_content->d_name[0] != '.') {
-                char *a = mx_strjoin(names->dirs[names->dirs_index], mx_strjoin("/", names->dirs_content->d_name));  
-    
-                ++count;
-                count += recursion_R_flag_count(names);
-                free(a);
-            }
+static int recursion_R_flag_count(t_names *names, char *dir_path) { 
+    struct dirent * entry;
+    uint16_t count = 0;
+    DIR *folder = opendir(dir_path);
+
+    while((names->dirs_content = readdir(folder)) != NULL) {
+        if(names->dirs_content->d_type == DT_DIR && names->dirs_content->d_name[0] != '.') {
+            char *dir_path1 = mx_strjoin("/", names->dirs_content->d_name);
+            char *dir_path2 = mx_strjoin(dir_path, dir_path1);  
+            free(dir_path1);
+            ++count;
+            count += recursion_R_flag_count(names, dir_path2);
+            free(dir_path2);
         }
-        closedir(folder);
-        return count;
+    }
+
+    closedir(folder);
+    return count;
 }
 
-static void recursion_R_flag_search_add_dirs(char *str, char **all_dir_to_open) { 
-    DIR * dirp;
+static void recursion_R_flag_search_add_dirs(t_names *names, char *dir_path) { 
+    DIR *dirp = NULL;
     struct dirent * entry;
 
-    dirp = opendir(names->dirs[names->dirs_index]);
+    dirp = opendir(dir_path);
     while((entry = readdir(dirp)) != NULL) {
         if(entry->d_type == DT_DIR && entry->d_name[0] != '.') {   // если приходит директория то РИКУРСИЯ ДЛЯ НЕЕ (надо  str_join (str + '/' + entry->d_name))
-            char *a = mx_strjoin(str, mx_strjoin("/", entry->d_name)); //char a  новая память 
-            //  тут надо добавлять куда-то а
-            int i = 0;
-            while(all_dir_to_open[i] != NULL) {
-                ++i;
-            }
-            all_dir_to_open[i] = a;
+            char *dir_path1 = mx_strjoin("/", entry->d_name);
+            char *dir_path2 = mx_strjoin(dir_path, dir_path1); //char a  новая память 
+            free(dir_path1);
+    
+            names->recursion_dirs[names->recursion++] = dir_path2;
 
-            recursion_R_flag_search_add_dirs(a, all_dir_to_open);
+            recursion_R_flag_search_add_dirs(names, dir_path2);
         }
     }
     closedir(dirp);
 }
 
 void recursion_R_flag_main(t_names *names) {
-    int count = recursion_R_flag_count(names);
-    int i = 0;
+    names->recursion = 0;
+    uint16_t count = recursion_R_flag_count(names, names->dirs[0]); // 0 id temp
+    uint16_t i = 0;
 
     names->recursion_dirs = (char**)malloc((count + 1) * sizeof(char*));
 
     while(i < count) {
         names->recursion_dirs[i] = mx_strdup(names->dirs[i]);
-        recursion_R_flag_search_add_dirs(names);
+        recursion_R_flag_search_add_dirs(names, names->dirs[names->dirs_index]);
         i++;
     }
-
-
-   
-
-    /* test */
-    // i = 0;
-    // while(all_dir_to_open[i] != NULL) {
-    //     //printf("%d ", i);
-    //     printf("%s\n", all_dir_to_open[i]);
-    //     ++i;
-    // }
-
-
 }
-
-
-
-

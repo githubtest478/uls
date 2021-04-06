@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <pwd.h>
+#include <sys/ioctl.h>
 #include "libmx.h"
 
 //flag macrosses
@@ -83,12 +84,13 @@ typedef struct s_names {
     struct dirent *dirs_content;    //ino_t  d_ino       File serial number.
                                     //char   d_name[]    Filename string of entry.
     uint64_t total_size;
+    uint32_t *sort;
     uint32_t flags;
     uint32_t count_file;
+    uint32_t count_dirs; 
     uint32_t count_line;
-    uint32_t *sort;
-    uint8_t dirs_count;
     uint8_t dirs_index;
+    uint8_t recursion;
     DIR *folder;
 }              t_names;
 
@@ -105,6 +107,7 @@ void LineUp(t_names *names);
 void count_files(t_names *names);
 void fill_line(t_names *names);
 void print_list(t_names *names);
+void recursion_R_flag_main(t_names *names);
 
 char *get_serial_number(t_names *names);
 char *get_blocksize(t_names *names);
