@@ -77,6 +77,7 @@ enum e_flagset {
 // структура для файлов и директорий
 typedef struct s_names {
     char **dirs;
+    char **recursion_dirs;
     char ***list;
     struct stat filestat;
     struct dirent *dirs_content;    //ino_t  d_ino       File serial number.
@@ -94,7 +95,6 @@ typedef struct s_names {
 //functons
 void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
-void mx_test_open_curent_dir(t_names *names); //delete if dont need
 void init_names_structure(t_names *names);
 void print_dirs(t_names * names);
 void read_files_struct(t_names *names);
