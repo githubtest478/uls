@@ -93,14 +93,14 @@ char *get_time(t_names *names)
 {
     time_t time;
 
-    if(READ_FLAG(names->flags, flag_C)){
-        time = names->filestat.st_mtime;   
-    }
-    else if(READ_FLAG(names->flags, flag_c)) {
+    if(READ_FLAG(names->flags, flag_c)) {
         time = names->filestat.st_ctime; 
     }
     else if(READ_FLAG(names->flags, flag_u)) {
         time = names->filestat.st_atime; 
+    }
+    else {
+        time = names->filestat.st_mtime;   
     }
 
     char *a = ctime(&time);
@@ -146,4 +146,20 @@ char* get_size(t_names *names)
     }
     else
         return mx_itoa(names->filestat.st_size);
+}
+
+char* get_link(t_names *names) {
+    char *arg0 = mx_strjoin(names->dirs[names->dirs_index], "/");
+    char *arg = mx_strjoin(arg0, names->dirs_content->d_name);
+    free(arg0);
+    char buf[1024];
+    int len = 0;
+
+    if ((len = readlink(arg, buf, 1024)) != -1)
+        buf[len] = '\0';
+    free(arg);
+
+    char *link = mx_strnew(len);
+    mx_strcpy(link, buf);
+    return link;
 }

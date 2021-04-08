@@ -52,7 +52,8 @@ void fill_line(t_names *names)
     
     if(S_ISLNK(names->filestat.st_mode) && READ_FLAG(names->flags, flag_l)) {
         names->list[names->count_line][count_word++] = mx_strdup("->");             //9
-        names->list[names->count_line][count_word++] = mx_strdup("link_name");      //10 temporary
+       // names->list[names->count_line][count_word++] = mx_strdup("link_name");      //10 temporary
+        names->list[names->count_line][count_word++] = get_link(names);
     }
         
     names->list[names->count_line++][count_word] = NULL;                       
