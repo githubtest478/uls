@@ -6,7 +6,7 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_At);
     }
     else if(c == '1') { //the same grup as -1 -m -l -m
-        RESET_FLAG(names->flags, flag_m | flag_x);
+        RESET_FLAG(names->flags, flag_m | flag_x | flag_C | flag_l);
         SET_FLAG(names->flags, flag_one);
     }
     else if(c == 'A') { //the same grup as -a -A
@@ -45,14 +45,13 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_r);
     }
     else if(c == 'S') { //sort grup -c -r -t -S -f
-        RESET_FLAG(names->flags, SORT_MASK | flag_C);
+        RESET_FLAG(names->flags, SORT_MASK);
         SET_FLAG(names->flags, flag_S);
     }
     else if(c == 'T') {
         SET_FLAG(names->flags, flag_T);
     }
     else if(c == 't') { //sort grup -c -r -t -S -f
-        RESET_FLAG(names->flags, SORT_MASK);
         SET_FLAG(names->flags, flag_t);
     }
     else if(c == 'u') {
@@ -67,7 +66,7 @@ void set_flags(t_names *names, char c)
     }
     else if(c == 'x') { //the same grup as -x -C -l -m
         RESET_FLAG(names->flags, flag_C | flag_l | flag_one | flag_m);
-        SET_FLAG(names->flags, flag_x | flag_C);
+        SET_FLAG(names->flags, flag_x);
     }
     else if(c == 'p') {
         SET_FLAG(names->flags, flag_p);

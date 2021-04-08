@@ -17,48 +17,51 @@ static void next_dir(t_names *names)
     }
 }
 
-void count_files(t_names *names)
+static uint32_t count_files(t_names *names)
 {
-    names->folder = opendir(names->dirs[names->dirs_index]);
-    names->count_file = 0;
-    struct dirent *curent_dir;
-    
-    while((curent_dir = readdir(names->folder))) {
-        names->count_file++;
+    uint32_t files_number = 0;
+    struct dirent *curent_dir = NULL;
+    names->folder = opendir(names->dirs[names->count.dirs_index]);
+    next_dir(names);
+
+    while(names->dirs_content) {
+        files_number++;
         
-        if(READ_FLAG(names->flags, flag_R) && curent_dir->d_type == DT_DIR && curent_dir->d_name[0] != '.')
-            names->count_dirs++;
+        if(READ_FLAG(names->flags, flag_R)  && 
+           curent_dir->d_type == DT_DIR     && 
+           curent_dir->d_name[0] != '.')
+            names->count.dirs++;
+
+        next_dir(names);
     }
 
     closedir(names->folder);
+    return files_number;
 }
 
 void read_files_struct(t_names *names) {
-    count_files(names);
-    names->folder = opendir(names->dirs[names->dirs_index]);
-    
-    // if(names->folder == NULL) {
-    //     perror("Unable to read directory");
-    // }
+    uint32_t files_number = count_files(names);
+    names->folder = opendir(names->dirs[names->count.dirs_index]);
+
+    if(READ_FLAG(names->flags, flag_S)) { 
+        names->sort = (uint32_t *) malloc(sizeof(uint32_t) * files_number);
+    }
+    else if(READ_FLAG(names->flags, flag_t)) {
+        names->time_sort = (time_t *) malloc(sizeof(time_t) * files_number);
+    }
+
+    names->list = (char ***) malloc(sizeof(char **) * (files_number + 1));
+    names->count.line = 0; 
 
     next_dir(names);
 
-    if(READ_FLAG(names->flags, flag_S | flag_t | flag_c | flag_u)) { 
-        names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count_file);
-    }
-
-    names->list = (char ***) malloc(sizeof(char **) * (names->count_file + 1));
-    names->count_line = 0; 
-
     while(names->dirs_content) {
-        char *temp1 = mx_strjoin("/", names->dirs_content->d_name);
-        char *temp2 = mx_strjoin(names->dirs[names->dirs_index], temp1);
-        lstat(temp2, &names->filestat);
+        char *path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
+        lstat(path, &names->filestat);
         fill_line(names);  
         next_dir(names);
-        free(temp1);
-        free(temp2);
+        free(path);
     }
-
+    
     closedir(names->folder);
 }

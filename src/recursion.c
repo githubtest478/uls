@@ -31,7 +31,7 @@ static void recursion_R_flag_search_add_dirs(t_names *names, char *dir_path) {
             char *dir_path2 = mx_strjoin(dir_path, dir_path1); //char a  новая память 
             free(dir_path1);
     
-            names->recursion_dirs[names->recursion++] = dir_path2;
+            names->recursion_dirs[names->count.recursion++] = dir_path2;
 
             recursion_R_flag_search_add_dirs(names, dir_path2);
         }
@@ -40,7 +40,7 @@ static void recursion_R_flag_search_add_dirs(t_names *names, char *dir_path) {
 }
 
 void recursion_R_flag_main(t_names *names) {
-    names->recursion = 0;
+    names->count.recursion = 0;
     uint16_t count = recursion_R_flag_count(names, names->dirs[0]); // 0 id temp
     uint16_t i = 0;
 
@@ -48,7 +48,7 @@ void recursion_R_flag_main(t_names *names) {
 
     while(i < count) {
         names->recursion_dirs[i] = mx_strdup(names->dirs[i]);
-        recursion_R_flag_search_add_dirs(names, names->dirs[names->dirs_index]);
+        recursion_R_flag_search_add_dirs(names, names->dirs[names->count.dirs_index]);
         i++;
     }
 }

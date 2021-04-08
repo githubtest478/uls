@@ -2,7 +2,7 @@
 
 /* new itoa from  −9,223,372,036,854,775,807, TO  +9,223,372,036,854,775,807 */ 
 char *mx_itoa(long long number) {
-    char *str = (char *)malloc(21);
+    char *str = (char *) malloc(21);
 	int count = 0;
 	unsigned long long num;
     int flag = 0;

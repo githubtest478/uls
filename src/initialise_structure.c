@@ -1,15 +1,23 @@
 #include "uls.h"
 
+static void init_count_struct(t_count *count)
+{
+    count->dirs = 0;
+    count->files = 0;
+    count->links = 0;
+    count->line = 0;
+    count->dirs_index = 0;
+    count->files_index = 0;
+    count->links_index = 0;
+    count->recursion = 0;
+}
+
 void init_names_structure(t_names *names)
 {
     RESET_FLAG(names->flags, ~clear_flags);
     names->flags |= flag_C;
-    names->dirs_index = 0;
-    names->count_file = 0;
-    names->count_dirs = 0; 
-    names->count_line = 0;
     names->total_size = 0;
-    names->recursion = 0;
+    init_count_struct(&names->count);
     names->sort = NULL;
     names->dirs = NULL;
     names->list = NULL;

@@ -149,7 +149,7 @@ char* get_size(t_names *names)
 }
 
 char* get_link(t_names *names) {
-    char *arg0 = mx_strjoin(names->dirs[names->dirs_index], "/");
+    char *arg0 = mx_strjoin(names->dirs[names->count.dirs_index], "/");
     char *arg = mx_strjoin(arg0, names->dirs_content->d_name);
     free(arg0);
     char buf[1024];

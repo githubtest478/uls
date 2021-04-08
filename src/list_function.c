@@ -3,15 +3,23 @@
 static void aditional_parameters(t_names *names)
 {
     //sort parameters
-    if(READ_FLAG(names->flags, flag_f));
-    else if(READ_FLAG(names->flags, flag_S))
-        names->sort[names->count_line] += names->filestat.st_size;
-    else if(READ_FLAG(names->flags, flag_t))
-        names->sort[names->count_line] += names->filestat.st_mtime;
-    else if(READ_FLAG(names->flags, flag_c))
-        names->sort[names->count_line] += names->filestat.st_ctime;
-    else if(READ_FLAG(names->flags, flag_u))
-        names->sort[names->count_line] += names->filestat.st_atime;
+    if(READ_FLAG(names->flags, flag_S))
+        names->sort[names->count.line] = names->filestat.st_size;
+    else if(READ_FLAG(names->flags, flag_t)) {
+        if(READ_FLAG(names->flags, flag_c))
+            names->time_sort[names->count.line] = names->filestat.st_ctime;
+        else if(READ_FLAG(names->flags, flag_u))
+            names->time_sort[names->count.line] = names->filestat.st_atime;
+        else
+            names->time_sort[names->count.line] = names->filestat.st_mtime;
+
+        /* Binary test
+        for(uint32_t i = 0; i < 32; ++i) {
+            mx_printchar((*((uint32_t *)&names->time_sort[names->count.line]) & (0x80000000 >> i)) ? '1' : '0');
+        }
+        mx_printchar('\n');
+        */
+    }
 
     //count parametrs
     if(READ_FLAG(names->flags, flag_l | flag_s))
@@ -27,37 +35,36 @@ void fill_line(t_names *names)
     list_size += READ_FLAG(names->flags, flag_s);
 
     if(S_ISLNK(names->filestat.st_mode))
-        names->list[names->count_line] = (char **) malloc(sizeof(char *) * list_size + 2);
+        names->list[names->count.line] = (char **) malloc(sizeof(char *) * list_size + 2);
     else
-        names->list[names->count_line] = (char **) malloc(sizeof(char *) * list_size);
+        names->list[names->count.line] = (char **) malloc(sizeof(char *) * list_size);
     
     aditional_parameters(names);
 
     if(READ_FLAG(names->flags, flag_i))
-        names->list[names->count_line][count_word++] = get_serial_number(names);    //0
+        names->list[names->count.line][count_word++] = get_serial_number(names);    //0
     
     if(READ_FLAG(names->flags, flag_s))
-        names->list[names->count_line][count_word++] = get_blocksize(names);        //1
+        names->list[names->count.line][count_word++] = get_blocksize(names);        //1
 
     if(READ_FLAG(names->flags, flag_l)) {
-        names->list[names->count_line][count_word++] = get_permission(names);        //2 
-        names->list[names->count_line][count_word++] = get_link_param(names);       //3 
-        names->list[names->count_line][count_word++] = get_owner(names);            //4 
-        names->list[names->count_line][count_word++] = get_group(names);            //5 
-        names->list[names->count_line][count_word++] = get_size(names);             //6
-        names->list[names->count_line][count_word++] = get_time(names);             //7
+        names->list[names->count.line][count_word++] = get_permission(names);       //2 
+        names->list[names->count.line][count_word++] = get_link_param(names);       //3 
+        names->list[names->count.line][count_word++] = get_owner(names);            //4 
+        names->list[names->count.line][count_word++] = get_group(names);            //5 
+        names->list[names->count.line][count_word++] = get_size(names);             //6
+        names->list[names->count.line][count_word++] = get_time(names);             //7
     }
 
-    names->list[names->count_line][count_word++] = get_name(names);                 //8
+    names->list[names->count.line][count_word++] = get_name(names);                 //8
     
     if(S_ISLNK(names->filestat.st_mode) && READ_FLAG(names->flags, flag_l)) {
-        names->list[names->count_line][count_word++] = mx_strdup("->");             //9
-       // names->list[names->count_line][count_word++] = mx_strdup("link_name");      //10 temporary
-        names->list[names->count_line][count_word++] = get_link(names);
+        names->list[names->count.line][count_word++] = mx_strdup("->");             //9
+        names->list[names->count.line][count_word++] = get_link(names);             //10
     }
         
-    names->list[names->count_line++][count_word] = NULL;                       
-    names->list[names->count_line] = NULL;
+    names->list[names->count.line++][count_word] = NULL;                       
+    names->list[names->count.line] = NULL;
 }
 
 void print_list(t_names *names)

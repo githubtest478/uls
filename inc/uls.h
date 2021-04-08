@@ -21,7 +21,7 @@
 #define RESET_FLAG(reg, flag) (reg &= ~(flag)) //use to clear the flag
 #define READ_FLAG(reg, flag) !!(reg & (flag)) //use to identify if flag(see e_flagset) is set
 
-#define SORT_MASK (flag_r | flag_S | flag_t | flag_f | flag_c | flag_u)
+#define SORT_MASK (flag_r | flag_S | flag_c | flag_u)
 
 //error massages
 #define USAGE "usage: uls [-l] [file ...]\n"
@@ -75,6 +75,17 @@ enum e_flagset {
     flag_8      =   ((uint32_t)0x00800000U)     //Addition flag
 };
 
+typedef struct s_count {
+    uint32_t dirs; 
+    uint32_t files; 
+    uint32_t links; 
+    uint32_t line;
+    uint32_t dirs_index;
+    uint32_t files_index;
+    uint32_t links_index;
+    uint32_t recursion;
+}              t_count;
+
 // структура для файлов и директорий
 typedef struct s_names {
     char **dirs;
@@ -87,12 +98,9 @@ typedef struct s_names {
                                     //char   d_name[]    Filename string of entry.
     uint64_t total_size;
     uint32_t *sort;
+    time_t *time_sort;
     uint32_t flags;
-    uint32_t count_file;
-    uint32_t count_dirs; 
-    uint32_t count_line;
-    uint8_t dirs_index;
-    uint8_t recursion;
+    t_count count;
     DIR *folder;
 }              t_names;
 
@@ -106,7 +114,6 @@ void delete_list(t_names *names);
 void sort(t_names *names);
 void init_list(t_names *names);
 void LineUp(t_names *names);
-void count_files(t_names *names);
 void fill_line(t_names *names);
 void print_list(t_names *names);
 void recursion_R_flag_main(t_names *names);
