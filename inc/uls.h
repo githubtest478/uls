@@ -108,7 +108,7 @@ void count_files(t_names *names);
 void fill_line(t_names *names);
 void print_list(t_names *names);
 void recursion_R_flag_main(t_names *names);
-
+void multicolumn(t_names *names);
 char *get_serial_number(t_names *names);
 char *get_blocksize(t_names *names);
 char *get_permission(t_names *names);

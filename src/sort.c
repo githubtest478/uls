@@ -48,7 +48,8 @@ void sort(t_names *names)
     else if(READ_FLAG(names->flags, flag_t | flag_c | flag_S | flag_u)) {
         param_sort(names);
     }
-    else if(READ_FLAG(names->flags, flag_r | flag_C)) {
+    else {
         sort_by_alphabet(names); 
     }
+    //if(READ_FLAG(names->flags, flag_r | flag_C))
 }   

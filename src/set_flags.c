@@ -34,8 +34,8 @@ void set_flags(t_names *names, char c)
         SET_FLAG(names->flags, flag_h);
     }
     else if(c == 'l') { //the same grup as -x -C -l -1 -m
-        RESET_FLAG(names->flags, flag_x | flag_m);
-        SET_FLAG(names->flags, flag_l | flag_one | flag_C);
+        RESET_FLAG(names->flags, flag_x | flag_m | flag_C);
+        SET_FLAG(names->flags, flag_l | flag_one);
     }
     else if(c == 'R') {
         SET_FLAG(names->flags, flag_R);

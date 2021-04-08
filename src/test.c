@@ -74,10 +74,4 @@ void recursion_R_flag_test(char *str) {     //будет приходить t_na
     // closedir(dirp);
 }
 
-/* считает ширину экрана */
-int width_terminal(void) {
-    int width = 0;
-    ioctl(0, TIOCGWINSZ, &width);
-    width >>= 16;
-    return width;
-}
+

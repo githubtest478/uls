@@ -90,6 +90,9 @@ void LineUp(t_names *names)
         LineUp_colum_left(names, ++lined_colum);
         LineUp_add_borders(names, lined_colum++);
         LineUp_colum_right(names, lined_colum++);
-        LineUp_colum_left(names, ++lined_colum);
+        //LineUp_colum_left(names, ++lined_colum);
+        /* test */
+        lined_colum++;
     }
+    LineUp_colum_left(names, lined_colum);
 }

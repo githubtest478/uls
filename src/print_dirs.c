@@ -53,9 +53,17 @@ void print_dirs(t_names * names)
         }
         
         sort(names);
-        LineUp(names);
         print_total(names);
-        print_list(names);
+        LineUp(names);
+        
+        
+        if(READ_FLAG(names->flags, flag_C) || READ_FLAG(names->flags, flag_x)) {
+            multicolumn(names);
+        }
+        else {
+            print_list(names);
+        }
+      
 
         if(names->dirs[++dirs_index] || names->recursion || names->count_dirs) { 
             mx_printchar('\n');
