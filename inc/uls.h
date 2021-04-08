@@ -118,6 +118,7 @@ char *get_group(t_names *names);
 char *get_size(t_names *names);
 char *get_time(t_names *names);
 char *get_name(t_names *names);
+char* get_link(t_names *names);
 
 //debug function
 void print_set_flags(t_names *names);

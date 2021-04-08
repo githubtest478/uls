@@ -94,5 +94,6 @@ void LineUp(t_names *names)
         /* test */
         lined_colum++;
     }
-    LineUp_colum_left(names, lined_colum);
+     if(READ_FLAG(names->flags, flag_C))
+        LineUp_colum_left(names, lined_colum);
 }
