@@ -11,10 +11,13 @@ static int names_str_len(t_names *names) {
     uint8_t len = 0, index = 0;
 
     if(READ_FLAG(names->flags, flag_i)) 
-        len += mx_strlen(names->list[0][index++]), ++len;
+        len += mx_strlen(names->list[0][index++]); ++len;
     if(READ_FLAG(names->flags, flag_s))
         len += mx_strlen(names->list[0][index++]), ++len;
-    len += mx_strlen(names->list[0][index]), ++len;
+
+    len += mx_strlen(names->list[0][index]);
+    len += 3;
+
     return width_terminal() / len;
 }
 
@@ -43,7 +46,7 @@ static void multicolumn_C(t_names *names) {
     for(uint8_t i = 0; i <= names->count_line / column_n; ++i) { 
         for(uint8_t g = i; g < names->count_line; g += names->count_line / column_n + 1) {
             print_strarr(names->list[g], " ");
-            mx_printchar(' ');
+            mx_printstr("   ");
         }
         mx_printchar('\n');
     }

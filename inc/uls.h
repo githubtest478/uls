@@ -78,6 +78,8 @@ enum e_flagset {
 // структура для файлов и директорий
 typedef struct s_names {
     char **dirs;
+    char **files;
+    char **links;
     char **recursion_dirs;
     char ***list;
     struct stat filestat;
@@ -109,6 +111,7 @@ void fill_line(t_names *names);
 void print_list(t_names *names);
 void recursion_R_flag_main(t_names *names);
 void multicolumn(t_names *names);
+
 char *get_serial_number(t_names *names);
 char *get_blocksize(t_names *names);
 char *get_permission(t_names *names);
