@@ -40,6 +40,19 @@ static void print_strarr(char **arr, const char *delim)
 }
 
 // -C
+// static void multicolumn_C(t_names *names) {
+//     uint16_t column_n = names_str_len(names);
+//     uint16_t lines_n = (names->count.line / column_n) + 1;
+
+//     for(uint8_t i = 0; i < lines_n; ++i) { 
+//         for(uint8_t g = i; g < names->count.line; g += lines_n) {
+//             print_strarr(names->list[g], " ");
+//             mx_printstr("   ");
+//         }
+//         mx_printchar('\n');
+//     }
+// }
+
 static void multicolumn_C(t_names *names) {
     uint16_t column_n = names_str_len(names);
     uint16_t lines_n = (names->count.line / column_n) + 1;
@@ -47,7 +60,7 @@ static void multicolumn_C(t_names *names) {
     for(uint8_t i = 0; i < lines_n; ++i) { 
         for(uint8_t g = i; g < names->count.line; g += lines_n) {
             print_strarr(names->list[g], " ");
-            mx_printstr("   ");
+            mx_printstr(" ");
         }
         mx_printchar('\n');
     }
