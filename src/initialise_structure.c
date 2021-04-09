@@ -20,6 +20,8 @@ void init_names_structure(t_names *names)
     init_count_struct(&names->count);
     names->sort = NULL;
     names->dirs = NULL;
+    names->files = NULL;
+    names->links = NULL;
     names->list = NULL;
     names->dirs_content = NULL;
     names->folder = NULL;

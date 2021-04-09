@@ -79,7 +79,5 @@ void arg_validation(int argn, char **argv, t_names *names)
     }
 
     names->count.dirs = 0;
-    names->count.files = 0;
-    names->count.links = 0;
     // print_set_flags(names);
 }

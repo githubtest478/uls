@@ -86,6 +86,14 @@ char *get_name(t_names *names)
         free(temp1);
     }
     
+    if(READ_FLAG(names->flags, flag_p)) {
+        if(S_ISDIR(names->filestat.st_mode)) {
+            char *temp1 = mx_strjoin(file_name, "/");
+            free(file_name);
+            file_name = temp1;
+        }
+    }
+
     return file_name;
 }
 

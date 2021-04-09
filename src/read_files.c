@@ -20,16 +20,15 @@ static void next_dir(t_names *names)
 static uint32_t count_files(t_names *names)
 {
     uint32_t files_number = 0;
-    struct dirent *curent_dir = NULL;
     names->folder = opendir(names->dirs[names->count.dirs_index]);
     next_dir(names);
 
     while(names->dirs_content) {
         files_number++;
-        
+
         if(READ_FLAG(names->flags, flag_R)  && 
-           curent_dir->d_type == DT_DIR     && 
-           curent_dir->d_name[0] != '.')
+            names->dirs_content->d_type == DT_DIR     && 
+            names->dirs_content->d_name[0] != '.')
             names->count.dirs++;
 
         next_dir(names);
@@ -39,20 +38,52 @@ static uint32_t count_files(t_names *names)
     return files_number;
 }
 
-void read_files_struct(t_names *names) {
+void read_files_struct(t_names *names) 
+{
+    if(READ_FLAG(names->flags, flag_S | flag_t)) { 
+        names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count.files);
+    }
+
+    names->list = (char ***) malloc(sizeof(char **) * (names->count.files + 1));
+    names->count.line = 0;
+    SET_FLAG(names->flags, flag_file);
+
+    for(; names->files[names->count.line];) {
+        stat(names->files[names->count.line], &names->filestat);
+        fill_line(names);
+    }
+
+    RESET_FLAG(names->flags, flag_file);
+}
+
+void read_links_struct(t_names *names) 
+{
+    if(READ_FLAG(names->flags, flag_S | flag_t)) { 
+        names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count.links);
+    }
+
+    names->list = (char ***) malloc(sizeof(char **) * (names->count.links + 1));
+    names->count.line = 0; 
+    SET_FLAG(names->flags, flag_link);
+
+    for(; names->links[names->count.line];) {
+        lstat(names->links[names->count.line], &names->filestat);
+        fill_line(names);
+    }
+
+    RESET_FLAG(names->flags, flag_l);
+}
+
+void read_dirs_struct(t_names *names) {
     uint32_t files_number = count_files(names);
     names->folder = opendir(names->dirs[names->count.dirs_index]);
 
-    if(READ_FLAG(names->flags, flag_S)) { 
+    if(READ_FLAG(names->flags, flag_S | flag_t)) { 
         names->sort = (uint32_t *) malloc(sizeof(uint32_t) * files_number);
-    }
-    else if(READ_FLAG(names->flags, flag_t)) {
-        names->time_sort = (time_t *) malloc(sizeof(time_t) * files_number);
     }
 
     names->list = (char ***) malloc(sizeof(char **) * (files_number + 1));
     names->count.line = 0; 
-
     next_dir(names);
 
     while(names->dirs_content) {

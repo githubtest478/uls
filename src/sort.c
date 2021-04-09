@@ -40,36 +40,13 @@ static void size_sort(t_names *names)
     names->sort = NULL;
 }
 
-static void time_sort(t_names *names)
-{
-    for (uint32_t i = 0; i < names->count.line; i++) {
-        for (uint32_t j = 0; j < names->count.line - 1; j++) {
-            if (/*  Unknown condition    */0) {
-                time_t temp_time = names->time_sort[j + 1];
-                char** temp = names->list[j];
-                names->list[j + 1] = names->list[j];
-                names->time_sort[j + 1] = names->time_sort[j];
-                names->list[j] = temp;
-                names->time_sort[j] = temp_time;
-            }
-        }
-    }
-
-    free(names->time_sort);
-    names->time_sort = NULL;
-}
-
-
 void sort(t_names *names)
 {
     if(READ_FLAG(names->flags, flag_f)) {
         return;
     }
-    else if(READ_FLAG(names->flags, flag_S)) {
+    else if(READ_FLAG(names->flags, flag_S | flag_t)) {
         size_sort(names);
-    }
-    else if(READ_FLAG(names->flags, flag_t)) {
-        time_sort(names);
     }
     else {
         sort_by_alphabet(names); 

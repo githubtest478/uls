@@ -5,7 +5,8 @@ int main(int argn, char **argv) {
     
     init_names_structure(names);
     arg_validation(argn, argv, names);
-    print_dirs(names);
+    print(names);
 
+    // system("leaks -q uls");
     return EXIT_SUCCESS;
 }

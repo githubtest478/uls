@@ -14,14 +14,13 @@
 #include <time.h>
 #include <pwd.h>
 #include <sys/ioctl.h>
+#include <time.h> //temp
 #include "libmx.h"
 
 //flag macrosses
 #define SET_FLAG(reg, flag) (reg |= (flag)) //use to set flag
 #define RESET_FLAG(reg, flag) (reg &= ~(flag)) //use to clear the flag
 #define READ_FLAG(reg, flag) !!(reg & (flag)) //use to identify if flag(see e_flagset) is set
-
-#define SORT_MASK (flag_r | flag_S | flag_c | flag_u)
 
 //error massages
 #define USAGE "usage: uls [-l] [file ...]\n"
@@ -71,8 +70,8 @@ enum e_flagset {
     flag_p      =   ((uint32_t)0x00080000U),    //-p Write a slash (/) after each filename if that file is a directory.
     flag_m      =   ((uint32_t)0x00100000U),    //-m Stream output format; List files across the page, separated by commas.
     flag_s      =   ((uint32_t)0x00200000U),    //-s Display the number of file system blocks actually used by each file, in units of 512 bytes, where partial units are rounded up to the next integer value.
-    flag_7      =   ((uint32_t)0x00400000U),    //Addition flag
-    flag_8      =   ((uint32_t)0x00800000U)     //Addition flag
+    flag_file   =   ((uint32_t)0x00400000U),    //Addition flag
+    flag_link   =   ((uint32_t)0x00800000U)     //Addition flag
 };
 
 typedef struct s_count {
@@ -108,8 +107,10 @@ typedef struct s_names {
 void arg_validation(int argn, char **argv, t_names *names);
 void set_flags(t_names *names, char c);
 void init_names_structure(t_names *names);
-void print_dirs(t_names * names);
+void print(t_names *names);
+void read_dirs_struct(t_names *names);
 void read_files_struct(t_names *names);
+void read_links_struct(t_names *names);
 void delete_list(t_names *names);
 void sort(t_names *names);
 void init_list(t_names *names);
@@ -128,7 +129,7 @@ char *get_group(t_names *names);
 char *get_size(t_names *names);
 char *get_time(t_names *names);
 char *get_name(t_names *names);
-char* get_link(t_names *names);
+char *get_link(t_names *names);
 
 //debug function
 void print_set_flags(t_names *names);
