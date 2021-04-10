@@ -74,4 +74,26 @@ void recursion_R_flag_test(char *str) {     //будет приходить t_na
     // closedir(dirp);
 }
 
+void print_xattr(t_names *names, uint8_t index_i, uint8_t index_j) 
+{
+    if(!READ_FLAG(names->flags, flag_At))
+        return;
+    
+    char *path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->list[index_i][index_j]);
 
+    ssize_t attr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
+    if(attr > 0) {
+        char a[attr];
+        
+        listxattr(path, a, attr, XATTR_NOFOLLOW);
+        mx_printchar('\t');
+        mx_printstr(a);
+        mx_printchar('\t');
+        mx_printint(attr);
+        mx_printchar('\n');
+
+        if(attr == -1)
+            perror("Error:");
+    }
+    free(path);
+}

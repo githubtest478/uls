@@ -13,7 +13,15 @@ static int32_t round_bytes(double num)
 }
 
 static char get_attr_acl(t_names *names) {
-    char *path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
+    char *path = NULL;
+
+    if(READ_FLAG(names->flags, flag_link))
+        path = names->links[names->count.line];
+    else if (READ_FLAG(names->flags, flag_file)) 
+        path = names->files[names->count.line];
+    else
+        path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
+
     ssize_t attr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
     acl_t acl = NULL;
 
@@ -27,7 +35,10 @@ static char get_attr_acl(t_names *names) {
         free(path);
         return '+';
     }
-    free(path);
+
+    if(!READ_FLAG(names->flags, flag_link | flag_file))
+        free(path);
+
     return ' ';
 }
 
@@ -60,7 +71,11 @@ char *get_permission(t_names *names)
     permission[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
     permission[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
     permission[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
-    permission[10] = get_attr_acl(names); //' ';//S_ISSOCK(names->filestat.st_mode)  ? '@' : ' '; //need to be modify
+    if(READ_FLAG(names->flags, flag_link))
+        permission[10] = ' ';
+    else
+        permission[10] = get_attr_acl(names);
+
     
     return permission;
 } 
@@ -83,28 +98,16 @@ char *get_group(t_names *names)
 
 char *get_name(t_names *names)
 {
-    char *file_name = mx_strdup(names->dirs_content->d_name);
+    char *file_name = NULL;
 
-    if(READ_FLAG(names->flags, flag_G)) {
-        char *temp1 = NULL;
+    if(READ_FLAG(names->flags, flag_link))
+        file_name = mx_strdup(names->links[names->count.line]);
+    else if (READ_FLAG(names->flags, flag_file)) 
+        file_name = mx_strdup(names->files[names->count.line]);
+    else
+        file_name = mx_strdup(names->dirs_content->d_name);
 
-        if(S_ISDIR(names->filestat.st_mode)) {
-            temp1 = mx_strjoin(BLUE, file_name);
-        }
-        else if(S_ISLNK(names->filestat.st_mode)) {
-            temp1 = mx_strjoin(MAGENTA, file_name);
-        }
-        else if(names->filestat.st_mode & S_IXUSR) {
-            temp1 = mx_strjoin(RED, file_name);
-        }
-        else {
-            temp1 = mx_strjoin(LIGHT_GRAY, file_name);
-        }
-
-        free(file_name);
-        file_name = mx_strjoin(temp1, DEFAULT_COLLOR);
-        free(temp1);
-    }
+    set_color(names, &file_name);
     
     if(READ_FLAG(names->flags, flag_p)) {
         if(S_ISDIR(names->filestat.st_mode)) {
@@ -177,17 +180,24 @@ char* get_size(t_names *names)
 }
 
 char* get_link(t_names *names) {
-    char *arg0 = mx_strjoin(names->dirs[names->count.dirs_index], "/");
-    char *arg = mx_strjoin(arg0, names->dirs_content->d_name);
-    free(arg0);
+    char *arg = NULL;
+
+    if(READ_FLAG(names->flags, flag_link))
+        arg = names->links[names->count.line];
+    else if (READ_FLAG(names->flags, flag_file)) 
+        arg = names->files[names->count.line];
+    else
+        arg = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
+
     char buf[1024];
     int len = 0;
 
     if ((len = readlink(arg, buf, 1024)) != -1)
         buf[len] = '\0';
-    free(arg);
 
-    char *link = mx_strnew(len);
-    mx_strcpy(link, buf);
+    if(!READ_FLAG(names->flags, flag_link | flag_file))
+        free(arg);
+
+    char *link = mx_strdup(buf);
     return link;
 }

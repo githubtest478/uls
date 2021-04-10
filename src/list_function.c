@@ -54,7 +54,7 @@ static void aditional_parameters(t_names *names)
 }
 
 void fill_line(t_names *names)
-{
+{    
     uint8_t count_word = 0;
     uint8_t list_size = 2;
     list_size += READ_FLAG(names->flags, flag_l) ? 6 : 0;
@@ -67,7 +67,7 @@ void fill_line(t_names *names)
         names->list[names->count.line] = (char **) malloc(sizeof(char *) * list_size);
     
     aditional_parameters(names);
-
+    
     if(READ_FLAG(names->flags, flag_i))
         names->list[names->count.line][count_word++] = get_serial_number(names);    //0
     
@@ -83,12 +83,7 @@ void fill_line(t_names *names)
         names->list[names->count.line][count_word++] = get_time(names);             //7
     }
 
-    if(READ_FLAG(names->flags, flag_file))
-        names->list[names->count.line][count_word++] = names->files[names->count.line];                 //8
-    else if(READ_FLAG(names->flags, flag_link))
-        names->list[names->count.line][count_word++] = names->links[names->count.line];                 //8
-    else
-        names->list[names->count.line][count_word++] = get_name(names);                 //8
+    names->list[names->count.line][count_word++] = get_name(names);                 //8
 
     if(S_ISLNK(names->filestat.st_mode) && READ_FLAG(names->flags, flag_l)) {
         names->list[names->count.line][count_word++] = mx_strdup("->");             //9
@@ -113,10 +108,13 @@ void print_list(t_names *names)
         for(; names->list[i][j] != NULL; ++j) {
             mx_printstr(dilim1);
             mx_printstr(names->list[i][j]);
+
         }
 
-        if(names->list[++i] != NULL)
+        if(names->list[++i] != NULL) {
             mx_printstr(dilim2);
+            print_xattr(names, i - 1, j - 1);
+        } 
     }
 
     mx_printchar('\n');

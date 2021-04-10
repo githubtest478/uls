@@ -49,7 +49,7 @@ void read_files_struct(t_names *names)
     SET_FLAG(names->flags, flag_file);
 
     for(; names->files[names->count.line];) {
-        stat(names->files[names->count.line], &names->filestat);
+        lstat(names->files[names->count.line], &names->filestat);
         fill_line(names);
     }
 
@@ -71,7 +71,7 @@ void read_links_struct(t_names *names)
         fill_line(names);
     }
 
-    RESET_FLAG(names->flags, flag_l);
+    RESET_FLAG(names->flags, flag_link);
 }
 
 void read_dirs_struct(t_names *names) {

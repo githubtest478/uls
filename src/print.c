@@ -52,9 +52,8 @@ static void print_links(t_names *names)
     read_links_struct(names);
     sort(names);
     LineUp(names);
-    if(READ_FLAG(names->flags, flag_C | flag_x))
-            multicolumn(names);
-        else 
+    if(READ_FLAG(names->flags, flag_C | flag_x));
+    else 
             print_list(names);
 
     delete_list(names);

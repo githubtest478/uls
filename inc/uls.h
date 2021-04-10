@@ -121,6 +121,8 @@ void fill_line(t_names *names);
 void print_list(t_names *names);
 void recursion_R_flag_main(t_names *names);
 void multicolumn(t_names *names);
+void set_color(t_names *names, char **file_name);
+void print_xattr(t_names *names, uint8_t index_i, uint8_t index_j);
 
 char *get_serial_number(t_names *names);
 char *get_blocksize(t_names *names);

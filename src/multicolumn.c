@@ -80,9 +80,10 @@ static void multicolumn_x(t_names *names) {
 
 // -C  -x
 void multicolumn(t_names *names) {
-    if(names->list[0] == NULL) {
+    if(!names->list) {
         return;
     }
+
     if(READ_FLAG(names->flags, flag_C)) {
         multicolumn_C(names);
     }
