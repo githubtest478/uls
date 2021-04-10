@@ -97,7 +97,15 @@ static void print_dirs(t_names * names)
         }
     }
 
-    // mx_strdel(names->recursion_dirs);
+    for(uint8_t index = 0; names->dirs[index]; ++index) {
+        if(malloc_size(names->dirs[index]))
+            mx_strdel(&names->dirs[index]);
+    }
+
+    if(malloc_size(names->dirs)) {
+        free(names->dirs);
+        names->dirs = NULL;
+    }
 
     if(local_temp) {
         names->dirs = local_temp;
