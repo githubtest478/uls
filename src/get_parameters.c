@@ -12,6 +12,25 @@ static int32_t round_bytes(double num)
     return integer_num;
 }
 
+static char get_attr_acl(t_names *names) {
+    char *path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
+    ssize_t attr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
+    acl_t acl = NULL;
+
+    if (attr > 0) {
+        free(path);
+        return '@';
+    }
+
+    if ((acl = acl_get_file(path, ACL_TYPE_EXTENDED))) {
+        acl_free(acl);
+        free(path);
+        return '+';
+    }
+    free(path);
+    return ' ';
+}
+
 char *get_serial_number(t_names *names) 
 {
     return mx_itoa(names->filestat.st_ino);
@@ -41,7 +60,7 @@ char *get_permission(t_names *names)
     permission[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
     permission[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
     permission[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
-    permission[10] = ' ';//S_ISSOCK(names->filestat.st_mode)  ? '@' : ' '; //need to be modify
+    permission[10] = get_attr_acl(names); //' ';//S_ISSOCK(names->filestat.st_mode)  ? '@' : ' '; //need to be modify
     
     return permission;
 } 
