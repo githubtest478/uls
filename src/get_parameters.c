@@ -30,7 +30,8 @@ char *get_permission(t_names *names)
                     S_ISREG(names->filestat.st_mode) ? '-' : 
                     S_ISLNK(names->filestat.st_mode) ? 'l' : 
                     S_ISBLK(names->filestat.st_mode) ? 'b' :
-                    S_ISCHR(names->filestat.st_mode) ? 'c' : '?';
+                    S_ISCHR(names->filestat.st_mode) ? 'c' : 
+                    S_ISSOCK(names->filestat.st_mode) ? 's' : 'p';
     permission[1] = (names->filestat.st_mode & S_IRUSR) ? 'r' : '-';
     permission[2] = (names->filestat.st_mode & S_IWUSR) ? 'w' : '-';
     permission[3] = (names->filestat.st_mode & S_IXUSR) ? 'x' : '-';
