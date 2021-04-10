@@ -16,6 +16,8 @@
 #include <sys/ioctl.h>
 #include <time.h> //temp
 #include "libmx.h"
+ #include <sys/xattr.h>
+#include <sys/acl.h>
 
 //flag macrosses
 #define SET_FLAG(reg, flag) (reg |= (flag)) //use to set flag
