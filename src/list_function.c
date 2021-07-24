@@ -17,15 +17,15 @@ static uint32_t convert_time(char *time)
     }
     
     mx_strncpy(temp, &time[8], 2);    //day
-    day = atoi(temp);
+    day = mx_atoi(temp);
     mx_strncpy(temp, &time[11], 2);    //hour
-    hour = atoi(temp);
+    hour = mx_atoi(temp);
     mx_strncpy(temp, &time[14], 2);    //minute
-    minutes = atoi(temp);
+    minutes = mx_atoi(temp);
     mx_strncpy(temp, &time[17], 2);    //seconds    
-    seconds = atoi(temp);
+    seconds = mx_atoi(temp);
     mx_strncpy(temp, &time[20], 4);    //year
-    year = atoi(temp);
+    year = mx_atoi(temp);
 
     res = (seconds + minutes * 60 + hour * 3600 + day * 3600 * 24 + month * 3600 * 24 * 31 + (year - 1970) * 3600 * 24 * 31 * 12);
 
@@ -96,10 +96,10 @@ void fill_line(t_names *names)
 
 void print_list(t_names *names)
 {
-    char *dilim1 = " ";
-    char *dilim2 = READ_FLAG(names->flags, flag_m)   ? ", "  :
-                   READ_FLAG(names->flags, flag_one) ? "\n"  :
-                   READ_FLAG(names->flags, flag_C)   ? " "   : "";
+    char *dilim1 =  " ";
+    char *dilim2 =  READ_FLAG(names->flags, flag_m)   ? ", "  :
+                    READ_FLAG(names->flags, flag_one) ? "\n"  :
+                    READ_FLAG(names->flags, flag_C)   ? " "   : "";
 
     for(uint8_t i = 0; names->list[i] != NULL;) {
         uint8_t  j = 0;

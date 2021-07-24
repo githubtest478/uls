@@ -90,10 +90,9 @@ void LineUp(t_names *names)
         LineUp_colum_left(names, ++lined_colum);
         LineUp_add_borders(names, lined_colum++);
         LineUp_colum_right(names, lined_colum++);
-        //LineUp_colum_left(names, ++lined_colum);
-        /* test */
         lined_colum++;
     }
-     if(READ_FLAG(names->flags, flag_C))
+
+    if(READ_FLAG(names->flags, flag_C) && isatty(STDOUT_FILENO))
         LineUp_colum_left(names, lined_colum);
 }

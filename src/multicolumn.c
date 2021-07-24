@@ -39,20 +39,6 @@ static void print_strarr(char **arr, const char *delim)
     }
 }
 
-// -C
-// static void multicolumn_C(t_names *names) {
-//     uint16_t column_n = names_str_len(names);
-//     uint16_t lines_n = (names->count.line / column_n) + 1;
-
-//     for(uint8_t i = 0; i < lines_n; ++i) { 
-//         for(uint8_t g = i; g < names->count.line; g += lines_n) {
-//             print_strarr(names->list[g], " ");
-//             mx_printstr("   ");
-//         }
-//         mx_printchar('\n');
-//     }
-// }
-
 static void multicolumn_C(t_names *names) {
     uint16_t column_n = names_str_len(names);
     uint16_t lines_n = (names->count.line / column_n) + 1;
@@ -60,9 +46,10 @@ static void multicolumn_C(t_names *names) {
     for(uint8_t i = 0; i < lines_n; ++i) { 
         for(uint8_t g = i; g < names->count.line; g += lines_n) {
             print_strarr(names->list[g], " ");
-            mx_printstr(" ");
+            !isatty(STDOUT_FILENO) ? mx_printchar('\n') : mx_printchar(' ');
         }
-        mx_printchar('\n');
+        if(isatty(STDOUT_FILENO)) 
+            mx_printchar('\n');
     }
 }
 
@@ -72,8 +59,8 @@ static void multicolumn_x(t_names *names) {
 
     for(uint8_t i = 0; names->list[i]; ++i) {
         print_strarr(names->list[i], " ");
-        mx_printchar(' ');
-        if((i + 1) % column_n == 0)
+        !isatty(STDOUT_FILENO) ? mx_printchar('\n') : mx_printchar(' ');
+        if((i + 1) % column_n == 0 && isatty(STDOUT_FILENO))
             mx_printchar('\n');
     }
 }

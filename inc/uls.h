@@ -14,10 +14,11 @@
 #include <time.h>
 #include <pwd.h>
 #include <sys/ioctl.h>
-#include <time.h> //temp
 #include "libmx.h"
- #include <sys/xattr.h>
-#include <sys/acl.h>
+#include <sys/xattr.h>
+#include <grp.h>
+#include <uuid/uuid.h>
+
 
 //flag macrosses
 #define SET_FLAG(reg, flag) (reg |= (flag)) //use to set flag
@@ -25,7 +26,7 @@
 #define READ_FLAG(reg, flag) !!(reg & (flag)) //use to identify if flag(see e_flagset) is set
 
 //error massages
-#define USAGE "usage: uls [-l] [file ...]\n"
+#define USAGE "usage: uls [-@1AaCceGhlRrSTtufixpms] [file ...]\n"
 
 //Color set
 #define BLACK               "\033[30m"
@@ -85,6 +86,7 @@ typedef struct s_count {
     uint32_t files_index;
     uint32_t links_index;
     uint32_t recursion;
+    int status;
 }              t_count;
 
 // структура для файлов и директорий

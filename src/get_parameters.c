@@ -12,36 +12,6 @@ static int32_t round_bytes(double num)
     return integer_num;
 }
 
-static char get_attr_acl(t_names *names) {
-    char *path = NULL;
-
-    if(READ_FLAG(names->flags, flag_link))
-        path = names->links[names->count.line];
-    else if (READ_FLAG(names->flags, flag_file)) 
-        path = names->files[names->count.line];
-    else
-        path = mx_path_build(names->dirs[names->count.dirs_index], "/", names->dirs_content->d_name);
-
-    ssize_t attr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
-    acl_t acl = NULL;
-
-    if (attr > 0) {
-        free(path);
-        return '@';
-    }
-
-    if ((acl = acl_get_file(path, ACL_TYPE_EXTENDED))) {
-        acl_free(acl);
-        free(path);
-        return '+';
-    }
-
-    if(!READ_FLAG(names->flags, flag_link | flag_file))
-        free(path);
-
-    return ' ';
-}
-
 char *get_serial_number(t_names *names) 
 {
     return mx_itoa(names->filestat.st_ino);
@@ -71,12 +41,8 @@ char *get_permission(t_names *names)
     permission[7] = (names->filestat.st_mode & S_IROTH) ? 'r' : '-';
     permission[8] = (names->filestat.st_mode & S_IWOTH) ? 'w' : '-';
     permission[9] = (names->filestat.st_mode & S_IXOTH) ? 'x' : '-';
-    if(READ_FLAG(names->flags, flag_link))
-        permission[10] = ' ';
-    else
-        permission[10] = get_attr_acl(names);
+    permission[10] = ' ';
 
-    
     return permission;
 } 
 
@@ -93,7 +59,13 @@ char *get_owner(t_names *names)
 
 char *get_group(t_names *names)
 {
-    return mx_itoa(names->filestat.st_gid);
+    struct group *pass = getgrgid(names->filestat.st_gid);
+    char *result; 
+    if(pass)
+        result = mx_strdup(pass->gr_name);
+    else
+        result = mx_itoa(names->filestat.st_gid);
+    return result;
 }
 
 char *get_name(t_names *names)
@@ -135,11 +107,19 @@ char *get_time(t_names *names)
     }
 
     char *a = ctime(&time);
+    char *b = mx_strnew(21);
+    
+    if(READ_FLAG(names->flags, flag_T)) {
+        mx_memcpy(b, a + 4, 20);
+        b[20] = '\0';
+    }
+    else {
+        mx_memcpy(b, a + 4, 7);
+        mx_memcpy(b + 7, a + 20, 4);
+        b[12] = '\0';
+    }
 
-    if(READ_FLAG(names->flags, flag_T))
-        return mx_strndup(a + 4, 20); 
-    else
-        return mx_strndup(a + 4, 12); 
+    return b;
 }
 
 char* get_size(t_names *names) 
@@ -149,7 +129,6 @@ char* get_size(t_names *names)
         double bite_size = names->filestat.st_size;
         char *number = NULL;
         char *dimention_symbol[] = {"B", "K", "M", "G", "T", "P", "E", "Z", "Y"};
-        // char *dimention_symbol2[] = {"b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"}; //optional for bits
         
         while(bite_size > 1024) {
             bite_size /= 1024;

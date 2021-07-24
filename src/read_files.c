@@ -44,7 +44,11 @@ void read_files_struct(t_names *names)
         names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count.files);
     }
 
-    names->list = (char ***) malloc(sizeof(char **) * (names->count.files + 1));
+    if(names->count.files)
+        names->list = (char ***) malloc(sizeof(char **) * (names->count.files + 1));
+    else 
+        return;
+
     names->count.line = 0;
     SET_FLAG(names->flags, flag_file);
 
@@ -61,6 +65,11 @@ void read_links_struct(t_names *names)
     if(READ_FLAG(names->flags, flag_S | flag_t)) { 
         names->sort = (uint32_t *) malloc(sizeof(uint32_t) * names->count.links);
     }
+    
+    if(names->count.links)
+        names->list = (char ***) malloc(sizeof(char **) * (names->count.links + 1));
+    else 
+        return;
 
     names->list = (char ***) malloc(sizeof(char **) * (names->count.links + 1));
     names->count.line = 0; 
@@ -75,7 +84,15 @@ void read_links_struct(t_names *names)
 }
 
 void read_dirs_struct(t_names *names) {
-    uint32_t files_number = count_files(names);
+    uint32_t files_number = 0;
+    names->total_size = 0;
+
+    if(names->dirs)
+        files_number = count_files(names);
+
+    if(!files_number)
+        return;
+
     names->folder = opendir(names->dirs[names->count.dirs_index]);
 
     if(READ_FLAG(names->flags, flag_S | flag_t)) { 

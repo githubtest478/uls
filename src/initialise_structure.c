@@ -10,6 +10,7 @@ static void init_count_struct(t_count *count)
     count->files_index = 0;
     count->links_index = 0;
     count->recursion = 0;
+    count->status = 0;
 }
 
 void init_names_structure(t_names *names)

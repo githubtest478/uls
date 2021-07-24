@@ -74,21 +74,24 @@ static void print_dirs(t_names * names)
         read_dirs_struct(names);
 
         if(names->dirs[dirs_index + 1] || names->count.recursion || dirs_index) {
-            mx_printchar('\n');
+            if(dirs_index)
+                mx_printchar('\n');
             mx_printstr(names->dirs[dirs_index]);
             mx_printstr(":\n");
         }
 
-        sort(names);
-        print_total(names);
-        LineUp(names);
+        if(names->list) {
+            sort(names);
+            print_total(names);
+            LineUp(names);
 
-        if(READ_FLAG(names->flags, flag_C | flag_x))
-            multicolumn(names);
-        else 
-            print_list(names);
+            if(READ_FLAG(names->flags, flag_C | flag_x))
+                multicolumn(names);
+            else 
+                print_list(names);
 
-        delete_list(names);
+            delete_list(names); 
+        }
         
         if(READ_FLAG(names->flags, flag_R) && names->count.dirs) {
             ++names->count.recursion;
